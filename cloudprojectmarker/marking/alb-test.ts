@@ -225,9 +225,9 @@ describe("Application Load Balancing", () => {
     ];
 
     expect(
-      expectedIpTargetGroupAttributes,
+      ipTargetGroupAttributes.Attributes,
       "Lambda TargetGroup Attributes."
-    ).to.deep.eq(ipTargetGroupAttributes.Attributes);
+    ).to.deep.eq(expectedIpTargetGroupAttributes);
 
     const ipTargetHealth = await elb
       .describeTargetHealth({
