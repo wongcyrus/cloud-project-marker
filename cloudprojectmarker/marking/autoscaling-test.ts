@@ -128,7 +128,7 @@ done
     ).to.equal(userData.replace(/[^\x00-\x7F]/g, "").replace(/\s/g, ""));
   });
 
-  it("should have a proper IAM Role Permission.", async () => {
+  it("should use LabRole.", async () => {
     const launchConfigurationName = autoScalingGroup.LaunchConfigurationName;
 
     const launchConfigurations = await autoScaling
@@ -154,42 +154,11 @@ done
     //     instanceProfile.InstanceProfile.Roles[0].AssumeRolePolicyDocument!
     //   )
     // );
-    const assumeRolePolicyDcoument = decodeURIComponent(
-      instanceProfile.InstanceProfile.Roles[0].AssumeRolePolicyDocument!
-    );
-    let expected = `{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole"}]}`;
-    expect(expected, "EC2 role.").to.equal(assumeRolePolicyDcoument);
-
-    const rolePolicies = await iam
-      .listRolePolicies({
-        RoleName: instanceProfile.InstanceProfile.Roles[0].RoleName,
-      })
-      .promise();
-
-    const policyName = rolePolicies.PolicyNames[0];
-
-    const policy = await iam
-      .getRolePolicy({
-        RoleName: instanceProfile.InstanceProfile.Roles[0].RoleName,
-        PolicyName: policyName,
-      })
-      .promise();
-
-    const inlinePolicyDcoument = JSON.parse(
-      decodeURIComponent(policy.PolicyDocument)
-    );
-    // console.log(inlinePolicyDcoument);
-    expected = `{"Version":"2012-10-17",
-    "Statement":[
-    {"Action":["logs:CreateLogStream","logs:PutLogEvents"],"Resource":"arn:aws:logs:us-east-1:${awsAccount}:log-group:/cloudproject/batchprocesslog:*","Effect":"Allow"},
-    {"Action":"logs:DescribeLogStreams","Resource":"arn:aws:logs:us-east-1:${awsAccount}:log-group:/cloudproject/batchprocesslog:*","Effect":"Allow"},
-    {"Action":["sqs:ReceiveMessage","sqs:ChangeMessageVisibility","sqs:GetQueueUrl","sqs:DeleteMessage","sqs:GetQueueAttributes"],"Resource":"arn:aws:sqs:us-east-1:${awsAccount}:To_Be_Processed_Queue","Effect":"Allow"}]}`;
-    expected = JSON.parse(expected);
-    expect(expected, "permission for log group, and SQS.").to.deep.equal(
-      inlinePolicyDcoument
+    let expected = `LabRole`;
+    expect(expected, "EC2 role.").to.equal(
+      instanceProfile.InstanceProfile.Roles[0].RoleName
     );
   });
-
   it("should have 2 Step Scaling Polices.", async () => {
     const autoScalingGroups = await autoScaling
       .describePolicies({

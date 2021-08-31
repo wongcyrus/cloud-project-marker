@@ -2,6 +2,8 @@
 
 ## Deploy the grader lambda.
 
+nvm install 14
+nvm alias default 14
 git clone https://github.com/wongcyrus/cloud-project-marker
 
 Open samconfig.toml and change the bucket name in us-east-1.

@@ -141,7 +141,7 @@ describe("Lambda", () => {
     );
   });
 
-  it("should have permission.", async () => {
+  it("should use LabRole.", async () => {
     const lambdaFunction = await lambda
       .getFunction({ FunctionName: "WebLambda" })
       .promise();
@@ -153,108 +153,11 @@ describe("Lambda", () => {
     // console.log(
     //   decodeURIComponent(lambdaExecutionRole.Role.AssumeRolePolicyDocument!)
     // );
-    let expected = {
-      Version: "2012-10-17",
-      Statement: [
-        {
-          Effect: "Allow",
-          Principal: { Service: "lambda.amazonaws.com" },
-          Action: "sts:AssumeRole",
-        },
-      ],
-    };
-    expect(expected, "role can be assumed by AWS Lambda Serives").to.deep.eq(
-      JSON.parse(
-        decodeURIComponent(lambdaExecutionRole.Role.AssumeRolePolicyDocument!)
-      )
-    );
+    let expected = "LabRole";
     const roleName = lambdaFunction.Configuration!.Role!.split("/")[1];
-    const lambdaRolePolicies = await iam
-      .listRolePolicies({
-        RoleName: roleName,
-      })
-      .promise();
-    //console.log(lambdaRolePolicies.PolicyNames);
-    const inlineRolePolicy = await iam
-      .getRolePolicy({
-        RoleName: roleName,
-        PolicyName: lambdaRolePolicies.PolicyNames[0],
-      })
-      .promise();
-    //console.log(inlineRolePolicy.PolicyDocument);
-
-    const permission = JSON.parse(
-      decodeURIComponent(inlineRolePolicy.PolicyDocument!)
+    expect(expected, "role can be assumed by AWS Lambda Serives").to.eq(
+      roleName
     );
-
-    //console.log(permission.Statement[0]);
-
-    expect(5, "5 permission statements").to.eq(permission.Statement.length);
-    expect(5, "5 Allow permission statements").to.eq(
-      permission.Statement.filter((c: any) => c.Effect === "Allow").length
-    );
-
-    const secretsmanagerStatement = permission.Statement.find((s: any) => {
-      return s.Action === "secretsmanager:GetSecretValue";
-    });
-    const rdsStatement = permission.Statement.find((s: any) => {
-      return s.Action === "rds:DescribeDBClusters";
-    });
-    const sqsStatement = permission.Statement.find((s: any) => {
-      return (
-        s.Resource ===
-        `arn:aws:sqs:us-east-1:${awsAccount}:To_Be_Processed_Queue`
-      );
-    });
-
-    const arrayEquals = (a: string[], b: string[]) => {
-      return a.length === b.length && a.every((val, index) => val === b[index]);
-    };
-
-    const xrayStatement = permission.Statement.find((s: any) => {
-      return arrayEquals(s.Action, [
-        "xray:PutTraceSegments",
-        "xray:PutTelemetryRecords",
-      ]);
-    });
-
-    const dynamoDBStatement = permission.Statement.find((s: any) => {
-      return arrayEquals(s.Action, [
-        "dynamodb:BatchWriteItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:DeleteItem",
-      ]);
-    });
-
-    expect(secretsmanagerStatement.Resource).to.startsWith(
-      "arn:aws:secretsmanager:us-east-1:" +
-        awsAccount +
-        ":secret:databaseMasterUserSecret"
-    );
-    expect(
-      "arn:aws:rds:us-east-1:" + awsAccount + ":cluster:CloudProjectDatabase"
-    ).to.eq(rdsStatement.Resource);
-
-    //console.log(sqsStatement);
-    expect(
-      ["sqs:SendMessage", "sqs:GetQueueAttributes", "sqs:GetQueueUrl"].sort(),
-      "3 queue actions"
-    ).to.deep.eq(sqsStatement.Action.sort());
-
-    expect(
-      ["xray:PutTraceSegments", "xray:PutTelemetryRecords"].sort(),
-      "2 x-ray actions"
-    ).to.deep.eq(xrayStatement.Action.sort());
-    expect(
-      [
-        "dynamodb:BatchWriteItem",
-        "dynamodb:PutItem",
-        "dynamodb:UpdateItem",
-        "dynamodb:DeleteItem",
-      ].sort(),
-      "4 DynamoDB actions"
-    ).to.deep.eq(dynamoDBStatement.Action.sort());
   });
 
   it("should have Resource-based policy.", async () => {
