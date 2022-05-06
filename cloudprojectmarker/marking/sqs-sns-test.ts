@@ -14,7 +14,7 @@ describe("SQS and SNS", () => {
       .promise();
     const processQueue = await sqs
       .listQueues({
-        QueueNamePrefix: "To_Be_Processed_Queue",
+        QueueNamePrefix: "To_Be_Processed_Queue.fifo",
       })
       .promise();
     expect(1, "Error_Queue exist.").to.equal(errorQueue.QueueUrls!.length);
@@ -22,12 +22,36 @@ describe("SQS and SNS", () => {
       processQueue.QueueUrls!.length
     );
   });
+  
+    it("To_Be_Processed_Queue should be FIFO", async () => {
+    const processQueueUrl = (
+      await sqs
+        .listQueues({
+          QueueNamePrefix: "To_Be_Processed_Queue.fifo",
+        })
+        .promise()
+    ).QueueUrls![0];
+    const processQueueAttributes: SQS.Types.GetQueueAttributesResult = await sqs
+      .getQueueAttributes({
+        QueueUrl: processQueueUrl,
+        AttributeNames: ["FifoQueue"],
+      })
+      .promise();
+      
+    console.log(JSON.stringify(processQueueAttributes));  
+
+    // console.log(processQueueAttributes);
+    const isFifoQueue: boolean = JSON.parse(processQueueAttributes!.Attributes!.FifoQueue);
+    expect(isFifoQueue,
+      "To_Be_Processed_Queue is FifoQueue."
+    ).to.be.true;
+  });
 
   it("To_Be_Processed_Queue should have 300 seconds VisibilityTimeout. ", async () => {
     const processQueueUrl = (
       await sqs
         .listQueues({
-          QueueNamePrefix: "To_Be_Processed_Queue",
+          QueueNamePrefix: "To_Be_Processed_Queue.fifo",
         })
         .promise()
     ).QueueUrls![0];

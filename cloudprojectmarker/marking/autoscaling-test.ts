@@ -165,7 +165,7 @@ done
         AutoScalingGroupName: "SqsAutoScalingGroup",
       })
       .promise();
-    // console.log(autoScalingGroups.ScalingPolicies);
+    // console.log(JSON.stringify(autoScalingGroups.ScalingPolicies));
     expect(2, "2 Scaling Polices").to.equal(
       autoScalingGroups.ScalingPolicies!.length
     );
@@ -174,7 +174,7 @@ done
       (c) => c.StepAdjustments!.length === 1
     );
 
-    // console.log(lowCapacityPolicy);
+    // console.log(JSON.stringify(lowCapacityPolicy));
     expect(
       { MetricIntervalUpperBound: 0, ScalingAdjustment: -1 },
       "One down step"
@@ -191,7 +191,7 @@ done
       "MetricAggregationType"
     ).to.equal("Average");
 
-    //console.log(highCapacityPolicy);
+    // console.log(highCapacityPolicy);
     expect(
       [
         {
@@ -243,8 +243,8 @@ done
       .promise();
 
     const lowCapacityMetricAlarm = lowCapacityAlarm.MetricAlarms![0];
-    //console.log(lowCapacityMetricAlarm);
 
+    // console.log(JSON.stringify(lowCapacityMetricAlarm));
     let expected = {
       ActionsEnabled: true,
       OKActions: [],
@@ -253,7 +253,7 @@ done
       MetricName: "ApproximateNumberOfMessagesVisible",
       Namespace: "AWS/SQS",
       Statistic: "Average",
-      Dimensions: [{ Name: "QueueName", Value: "To_Be_Processed_Queue" }],
+      Dimensions: [{ Name: "QueueName", Value: "To_Be_Processed_Queue.fifo" }],
       Period: 60,
       EvaluationPeriods: 1,
       Threshold: 0,
@@ -286,7 +286,7 @@ done
       MetricName: "ApproximateNumberOfMessagesVisible",
       Namespace: "AWS/SQS",
       Statistic: "Average",
-      Dimensions: [{ Name: "QueueName", Value: "To_Be_Processed_Queue" }],
+      Dimensions: [{ Name: "QueueName", Value: "To_Be_Processed_Queue.fifo" }],
       Period: 60,
       EvaluationPeriods: 1,
       Threshold: 10,
