@@ -4,7 +4,7 @@ import fs = require("fs");
 import path = require("path");
 
 const testReportBucket = process.env.TestReportBucket;
-console.log(testReportBucket);
+console.log("bucket:" + testReportBucket);
 
 export interface GraderEvent {
   aws_access_key?: string;
@@ -90,7 +90,8 @@ export const lambdaHandler = async (
   });
 
   const files = getFiles("/tmp/");
-  await Promise.all(files.map((c) => uploadFile(c)));
+  if (testReportBucket && testReportBucket !== "TestReportBucket")
+    await Promise.all(files.map((c) => uploadFile(c)));
 
   return {
     testResult: JSON.stringify(runner.testResults),

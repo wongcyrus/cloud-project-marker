@@ -1,5 +1,21 @@
 # cloudprojectmarker
 
+## Run the grader from Cloud9
+Build the grader.
+```
+git clone https://github.com/wongcyrus/cloud-project-marker
+cd cloud-project-marker/
+./build-layer.sh
+./install_all_packages.sh
+tsc
+sam build
+```
+Run the grader
+```
+sam local invoke CloudProjectMarkerFunction | jq -cr .testResult | jq . > testResult.json
+```
+
+
 ## Deploy the grader lambda.
 
 nvm install 14
@@ -26,13 +42,9 @@ aws cloudformation describe-stacks --stack-name cloudprojectmarker --query 'Stac
 
 aws cloudformation describe-stacks --stack-name cloudprojectmarker --query 'Stacks[0].Outputs[?OutputKey==`CheckMarkWebUiUrl`].OutputValue' --output text
 
-## Run Lambda Local in the current AWS Account.
-
-sam local invoke CloudProjectMarkerFunction --env-vars env.json | jq -cr .testResult | jq . > testResult.json
-
 ## Run Lambda Local in the other AWS Account.
 
-sam local invoke --env-vars env.json -e events/event.json CloudProjectMarkerFunction | jq -cr .testResult | jq . > testResult.json
+sam local invoke -e events/event.json CloudProjectMarkerFunction | jq -cr .testResult | jq . > testResult.json
 
 ## Run the Lambda
 
@@ -57,15 +69,6 @@ sam build
   "aws_secret_access_key": "YYYY"
 }
 
-
-## For AWS Educate Classroom, events/event.json in this format with session token.
-
-{
-  "graderParameter":"{\"Name\": \"Cyrus Wong\",    \"class\": \"IT114115\"}",
-  "aws_access_key": "XXXXX",
-  "aws_secret_access_key": "YYYY",
-  "aws_session_token":"ZZZZ"
-}
 
 # For Educators Developing test case
 Run Typescript compiler at background.
