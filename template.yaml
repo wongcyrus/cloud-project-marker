@@ -38,7 +38,7 @@ Resources:
     Properties:
       ContentUri: lib/.
       CompatibleRuntimes:
-        - nodejs12.x
+        - nodejs14.x
       LicenseInfo: 'Available under the MIT-0 license.'
       RetentionPolicy: Delete     
       

@@ -46,10 +46,6 @@ describe("Lambda", () => {
       .promise();
 
     // console.log(lambdaFunction);
-    expect(10, "Reserved Concurrent").to.eq(
-      lambdaFunction.Concurrency!.ReservedConcurrentExecutions
-    );
-
     // console.log(lambdaFunction.Configuration);
 
     let expected = {
