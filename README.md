@@ -3,6 +3,7 @@
 ## Run the grader from Cloud9
 Build the grader.
 ```
+sudo yum install jq -y
 git clone https://github.com/wongcyrus/cloud-project-marker
 cd cloud-project-marker/
 ./build-layer.sh
