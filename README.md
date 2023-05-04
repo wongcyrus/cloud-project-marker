@@ -4,6 +4,7 @@
 Build the grader.
 ```
 sudo yum install jq -y
+npm install -g typescript
 git clone https://github.com/wongcyrus/cloud-project-marker
 cd cloud-project-marker/
 ./build-layer.sh

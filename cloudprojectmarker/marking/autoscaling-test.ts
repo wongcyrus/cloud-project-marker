@@ -5,7 +5,7 @@ import * as AWS from "aws-sdk";
 import { Common } from "./common";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
+import chaiSubset from "chai-subset";
 import { AutoScalingGroup } from "aws-sdk/clients/autoscaling";
 chai.use(chaiSubset);
 
@@ -143,8 +143,8 @@ done
 
     const instanceProfile = await iam
       .getInstanceProfile({
-        InstanceProfileName: launchConfigurations.LaunchConfigurations![0]
-          .IamInstanceProfile!,
+        InstanceProfileName:
+          launchConfigurations.LaunchConfigurations![0].IamInstanceProfile!,
       })
       .promise();
 

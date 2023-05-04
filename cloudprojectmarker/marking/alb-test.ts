@@ -6,8 +6,8 @@ import { Common } from "./common";
 import { Helper } from "./../helper";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
-import * as chaiString from "chai-string";
+import chaiSubset from "chai-subset";
+import chaiString from "chai-string";
 import { LoadBalancer } from "aws-sdk/clients/elbv2";
 chai.use(chaiSubset);
 chai.use(chaiString);

@@ -1,5 +1,16 @@
 {
- 
+    "compilerOptions": {
+      "target": "esnext",
+      "strict": false,
+      "preserveConstEnums": true,
+      "noEmit": true,
+      "sourceMap": false,
+      "module":"es2015",
+      "moduleResolution":"node",
+      "esModuleInterop": true, 
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,  
+    },
     "include": ["cloudprojectmarker/**/*.ts", "cloudprojectmarker/**/*.js"],
-    "exclude": ["cloudprojectmarker/node_modules/*"]
+    "exclude": [ "cloudprojectmarker/node_modules/*","node_modules/*"]
 }

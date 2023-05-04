@@ -4,7 +4,7 @@ import "mocha";
 import * as AWS from "aws-sdk";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
+import chaiSubset from "chai-subset";
 chai.use(chaiSubset);
 
 describe("Database", () => {

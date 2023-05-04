@@ -5,8 +5,8 @@ import * as AWS from "aws-sdk";
 import { Common } from "./common";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
-import * as chaiString from "chai-string";
+import chaiSubset from "chai-subset";
+import chaiString from "chai-string";
 chai.use(chaiSubset);
 chai.use(chaiString);
 
