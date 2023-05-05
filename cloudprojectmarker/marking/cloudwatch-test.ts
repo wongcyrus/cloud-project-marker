@@ -4,8 +4,8 @@ import "mocha";
 import * as AWS from "aws-sdk";
 
 import * as chai from "chai";
-import chaiSubset from "chai-subset";
-chai.use(chaiSubset);
+import * as chaiSubset from "chai-subset";
+chai.use(chaiSubset as any);
 
 //Hints: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CountOccurrencesExample.html
 describe("CloudWatch", () => {

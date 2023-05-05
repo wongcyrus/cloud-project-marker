@@ -3,10 +3,8 @@
 ## Run the grader from Cloud9
 Build the grader.
 ```
-sudo yum install jq -y
+sudo apt install jq -y
 npm install -g typescript
-git clone https://github.com/wongcyrus/cloud-project-marker
-cd cloud-project-marker/
 ./build-layer.sh
 ./install_all_packages.sh
 tsc
@@ -20,8 +18,8 @@ sam local invoke CloudProjectMarkerFunction | jq -cr .testResult | jq . > testRe
 
 ## Deploy the grader lambda.
 
-nvm install 14
-nvm alias default 14
+nvm install 18
+nvm alias default 18
 git clone https://github.com/wongcyrus/cloud-project-marker
 
 Open samconfig.toml and change the bucket name in us-east-1.

@@ -5,10 +5,10 @@ import * as AWS from "aws-sdk";
 import { Common } from "./common";
 
 import * as chai from "chai";
-import chaiSubset from "chai-subset";
-import chaiString from "chai-string";
-chai.use(chaiSubset);
-chai.use(chaiString);
+import * as chaiSubset from "chai-subset";
+import * as chaiString from "chai-string";
+chai.use(chaiSubset as any);
+chai.use(chaiString as any);
 
 describe("Lambda", () => {
   const lambda: AWS.Lambda = new AWS.Lambda();

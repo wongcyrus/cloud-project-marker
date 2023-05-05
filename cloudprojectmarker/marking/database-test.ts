@@ -4,8 +4,8 @@ import "mocha";
 import * as AWS from "aws-sdk";
 
 import * as chai from "chai";
-import chaiSubset from "chai-subset";
-chai.use(chaiSubset);
+import * as chaiSubset from "chai-subset";
+chai.use(chaiSubset as any);
 
 describe("Database", () => {
   const rds: AWS.RDS = new AWS.RDS();

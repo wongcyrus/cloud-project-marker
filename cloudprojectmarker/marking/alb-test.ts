@@ -6,11 +6,11 @@ import { Common } from "./common";
 import { Helper } from "./../helper";
 
 import * as chai from "chai";
-import chaiSubset from "chai-subset";
-import chaiString from "chai-string";
+import * as chaiSubset from "chai-subset";
+import * as chaiString from "chai-string";
 import { LoadBalancer } from "aws-sdk/clients/elbv2";
-chai.use(chaiSubset);
-chai.use(chaiString);
+chai.use(chaiSubset as any);
+chai.use(chaiString as any);
 
 describe("Application Load Balancing", () => {
   const elb: AWS.ELBv2 = new AWS.ELBv2();
