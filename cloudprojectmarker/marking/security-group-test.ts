@@ -11,7 +11,10 @@ describe("Security Group", () => {
   let sqsEp: EC2.VpcEndpoint;
   let secretMgnEp: EC2.VpcEndpoint;
   const common = new Common();
-  before(async () => {
+
+  before(async function () {
+    this.timeout(20000);
+
     albSg = await common.getSgByName("ALB Security Group");
     lambdaSg = await common.getSgByName("Web Lambda Security Group");
     dbSg = await common.getSgByName("Database Security Group");

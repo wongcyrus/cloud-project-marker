@@ -1,12 +1,11 @@
 {
     "compilerOptions": {
-      "target": "esnext",
+      "target": "es2022",
       "strict": false,
       "preserveConstEnums": true,
-      "noEmit": true,
       "sourceMap": false,
-      "module":"es2015",
-      "moduleResolution":"node",
+      "module":"CommonJS",
+      "moduleResolution":"nodenext",
       "esModuleInterop": true, 
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,  

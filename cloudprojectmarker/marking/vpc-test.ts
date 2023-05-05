@@ -20,7 +20,8 @@ describe("VPC", () => {
     expect(vpcs.Vpcs![0].CidrBlock).to.equal("10.0.0.0/16");
   });
 
-  it("should be with 4 subnets with proper Cidr address.", async () => {
+  it("should be with 4 subnets with proper Cidr address.", async function () {
+    this.timeout(10000);
     let params: EC2.Types.DescribeVpcsRequest = {
       Filters: [{ Name: "tag:Name", Values: ["Cloud Project VPC"] }],
     };
@@ -40,7 +41,7 @@ describe("VPC", () => {
       .describeSubnets(params)
       .promise();
     // console.log(subnets.Subnets!);
-    //console.log(subnets.Subnets!.map((c) => c.CidrBlock).sort());
+    // console.log(subnets.Subnets!.map((c) => c.CidrBlock).sort());
 
     expect(4).to.equal(subnets.Subnets!.length);
     let expectedCidrAddresses = [
@@ -53,7 +54,8 @@ describe("VPC", () => {
       subnets.Subnets!.map((c) => c.CidrBlock).sort()
     );
   });
-  it("should be with 5 route tables for 4 subnets plus one local route only main route table.", async () => {
+  it("should be with 5 route tables for 4 subnets plus one local route only main route table.", async function () {
+    this.timeout(10000);
     let params: EC2.Types.DescribeVpcsRequest = {
       Filters: [{ Name: "tag:Name", Values: ["Cloud Project VPC"] }],
     };
