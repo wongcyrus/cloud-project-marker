@@ -21,9 +21,9 @@ describe("Lambda", () => {
     awsAccount = await common.getAWSAccount();
   });
 
-  it("should have one python3.8 Layer with MySQL Packages.", async () => {
+  it("should have one python3.10 Layer with MySQL Packages.", async () => {
     const layers = await lambda
-      .listLayers({ CompatibleRuntime: "python3.8" })
+      .listLayers({ CompatibleRuntime: "python3.10" })
       .promise();
     //Download your zipped package with this link
     // https://drive.google.com/file/d/1GlO9INJxPY63-wVVy-svzlgC9lKoHFGj/view?usp=sharing
@@ -31,9 +31,11 @@ describe("Lambda", () => {
     expect(1, "One Python Layer").to.eq(layers.Layers!.length);
   });
 
-  it("should have one Webserver Lambda Function.", async () => {
+  it("should have one Webserver Lambda Function.", async function () {
+    this.timeout(10000);
+
     const layers = await lambda
-      .listLayers({ CompatibleRuntime: "python3.8" })
+      .listLayers({ CompatibleRuntime: "python3.10" })
       .promise();
     // console.log(layers);
     expect(1, "One Python Layer").to.eq(layers.Layers!.length);
@@ -50,7 +52,7 @@ describe("Lambda", () => {
 
     let expected = {
       FunctionName: "WebLambda",
-      Runtime: "python3.8",
+      Runtime: "python3.10",
       Handler: "server.lambda_handler",
       Timeout: 120,
       MemorySize: 128,
@@ -96,7 +98,9 @@ describe("Lambda", () => {
     );
   });
 
-  it("should have one Webserver Lambda Function in 2 Private subnets.", async () => {
+  it("should have one Webserver Lambda Function in 2 Private subnets.", async function () {
+    this.timeout(10000);
+
     const lambdaFunction = await lambda
       .getFunction({ FunctionName: "WebLambda" })
       .promise();
@@ -137,7 +141,8 @@ describe("Lambda", () => {
     );
   });
 
-  it("should use LabRole.", async () => {
+  it("should use LabRole.", async function () {
+    this.timeout(10000);
     const lambdaFunction = await lambda
       .getFunction({ FunctionName: "WebLambda" })
       .promise();

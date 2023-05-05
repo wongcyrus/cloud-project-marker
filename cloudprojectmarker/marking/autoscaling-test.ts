@@ -18,7 +18,8 @@ describe("AutoScaling", () => {
 
   let autoScalingGroup: AutoScalingGroup;
   let awsAccount: string;
-  before(async () => {
+  before(async function () {
+    this.timeout(10000);
     awsAccount = await common.getAWSAccount();
     const autoScalingGroups = await autoScaling
       .describeAutoScalingGroups({
@@ -50,7 +51,8 @@ describe("AutoScaling", () => {
     );
   });
 
-  it("should have a Launch Configuration in instance type t2.nano.", async () => {
+  it("should have a Launch Configuration in instance type t2.nano.", async function () {
+    this.timeout(10000);
     const launchConfigurationName = autoScalingGroup.LaunchConfigurationName;
 
     const launchConfigurations = await autoScaling
@@ -66,7 +68,8 @@ describe("AutoScaling", () => {
     ).to.equal(launchConfigurations.LaunchConfigurations![0].InstanceType!);
   });
 
-  it("should have a Launch Configuration with correct UserData.", async () => {
+  it("should have a Launch Configuration with correct UserData.", async function () {
+    this.timeout(10000);
     const launchConfigurationName = autoScalingGroup.LaunchConfigurationName;
 
     const launchConfigurations = await autoScaling
@@ -128,7 +131,8 @@ done
     ).to.equal(userData.replace(/[^\x00-\x7F]/g, "").replace(/\s/g, ""));
   });
 
-  it("should use LabRole.", async () => {
+  it("should use LabRole.", async function () {
+    this.timeout(10000);
     const launchConfigurationName = autoScalingGroup.LaunchConfigurationName;
 
     const launchConfigurations = await autoScaling
@@ -159,7 +163,8 @@ done
       instanceProfile.InstanceProfile.Roles[0].RoleName
     );
   });
-  it("should have 2 Step Scaling Polices.", async () => {
+  it("should have 2 Step Scaling Polices.", async function () {
+    this.timeout(10000);
     const autoScalingGroups = await autoScaling
       .describePolicies({
         AutoScalingGroupName: "SqsAutoScalingGroup",
@@ -217,7 +222,8 @@ done
     ).to.equal("Average");
   });
 
-  it("should have 2 Alarms for To_Be_Processed_Queue.", async () => {
+  it("should have 2 Alarms for To_Be_Processed_Queue.", async function () {
+    this.timeout(10000);
     const autoScalingGroups = await autoScaling
       .describePolicies({
         AutoScalingGroupName: "SqsAutoScalingGroup",
