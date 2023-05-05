@@ -3,6 +3,7 @@
 ## Run the grader from Cloud9
 Build the grader.
 ```
+./install_sam_cli.sh
 sudo apt install jq -y
 npm install -g typescript
 ./build-layer.sh

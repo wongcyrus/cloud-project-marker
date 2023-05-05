@@ -1,8 +1,10 @@
 {
-    "compilerOptions": {
-    "target":"ES2018",
+  "compilerOptions": {
+    "target": "es2022",
     "module": "commonjs",
-    "lib": ["es2018"],
+    "lib": [
+      "es2022"
+    ],
     "declaration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -16,8 +18,15 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization":false,
-    "typeRoots": ["./node_modules/@types"]
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "moduleResolution": "nodenext",
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
   },
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
 }

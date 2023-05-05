@@ -5,9 +5,9 @@ import * as AWS from "aws-sdk";
 import { Common } from "./common";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
+import chaiSubset from "chai-subset";
 import { AutoScalingGroup } from "aws-sdk/clients/autoscaling";
-chai.use(chaiSubset as any);
+chai.use(chaiSubset);
 
 describe("AutoScaling", () => {
   const sqs: AWS.SQS = new AWS.SQS();
