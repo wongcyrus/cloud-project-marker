@@ -6,6 +6,7 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.1373.0",
     "axios": "^1.4.0"
   },
   "scripts": {
