@@ -1,5 +1,5 @@
 {
  
     "include": ["cloudprojectmarker/**/*.ts", "cloudprojectmarker/**/*.js"],
-    "exclude": ["cloudprojectmarker/node_modules/*"]
+    "exclude": ["node_modules","cloudprojectmarker/node_modules/*"]
 }

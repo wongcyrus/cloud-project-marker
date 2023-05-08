@@ -92,11 +92,19 @@ Resources:
   TestReportBucket:
     Type: AWS::S3::Bucket
     Properties:
-      AccessControl: PublicRead
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false        
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-    DeletionPolicy: Retain
+      OwnershipControls:
+        Rules:
+           - ObjectOwnership: BucketOwnerEnforced
+    DeletionPolicy: Delete
+    
   TestReportBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -112,7 +120,7 @@ Resources:
               - - 'arn:aws:s3:::'
                 - !Ref TestReportBucket
                 - /*
-      Bucket: !Ref TestReportBucket    
+      Bucket: !Ref TestReportBucket  
       
 Outputs:
   CloudProjectMarkerFunction:
