@@ -4,7 +4,7 @@ const querystring = require('querystring');
 const cloudProjectMarkerFunction = process.env.CloudProjectMarkerFunction;
 const recaptchaSiteKey = process.env.RecaptchaSiteKey;
 const recaptchaSercetKey = process.env.RecaptchaSercetKey;
-const axios = require('axios');
+const axios = require('axios').default;
 
 
 const extractKeys = rawKey => {

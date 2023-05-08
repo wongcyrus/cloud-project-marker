@@ -1,16 +1,35 @@
 # cloudprojectmarker
 
-## Run the grader from Cloud9
+
+## Run the grader from Codespaces
 Build the grader.
 ```
 ./install_sam_cli.sh
 sudo apt install jq -y
+nvm install 18
+nvm alias default 18
 npm install -g typescript
 ./build-layer.sh
 ./install_all_packages.sh
 tsc
 sam build
 ```
+
+## Run the grader from Cloud9
+```
+./install_sam_cli.sh
+sudo yum install jq -y
+npm install -g typescript
+./build-layer.sh
+./install_all_packages.sh
+cd cloudprojectmarker/
+tsc
+cd ..
+sam build
+```
+
+Amazon Linux 2 cannot run nodejs 18 properly in May 2023, so just use default node 16.
+
 
 Run the grader in Codespaces
 You need to update events/event.json with your AWS Academy session key.

@@ -103,7 +103,6 @@ const uploadFile = async (filePathName: string) => {
   var metaData = getContentTypeByFile(filePathName);
   const s3 = new AWS.S3();
   const params = {
-    ACL: "public-read",
     Bucket: testReportBucket!,
     Key: filePathName.replace("/tmp//", ""),
     Body: fileBuffer!,
