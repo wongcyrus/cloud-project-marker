@@ -27,7 +27,9 @@ tsc
 cd ..
 sam build
 ```
+
 Amazon Linux 2 cannot run nodejs 18 properly in May 2023, so just use default node 16.
+
 
 Run the grader in Codespaces
 You need to update events/event.json with your AWS Academy session key.

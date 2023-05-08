@@ -1,5 +1,16 @@
 {
- 
+    "compilerOptions": {
+      "target": "es2022",
+      "strict": false,
+      "preserveConstEnums": true,
+      "sourceMap": false,
+      "module":"CommonJS",
+      "moduleResolution":"nodenext",
+      "esModuleInterop": true, 
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,  
+    },
     "include": ["cloudprojectmarker/**/*.ts", "cloudprojectmarker/**/*.js"],
-    "exclude": ["node_modules","cloudprojectmarker/node_modules/*"]
+    "exclude": [ "cloudprojectmarker/node_modules/*","node_modules/*"]
 }
+

@@ -6,8 +6,8 @@ import { Common } from "./common";
 import { Helper } from "./../helper";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
-import * as chaiString from "chai-string";
+import chaiSubset from "chai-subset";
+import chaiString from "chai-string";
 import { LoadBalancer } from "aws-sdk/clients/elbv2";
 chai.use(chaiSubset);
 chai.use(chaiString);
@@ -21,7 +21,8 @@ describe("Application Load Balancing", () => {
   let awsAccount: string;
   let graderParmeters: any;
 
-  before(async () => {
+  before(async function () {
+    this.timeout(10000);
     const helper = new Helper();
     graderParmeters = helper.getGraderParmeters();
     console.log(graderParmeters);
@@ -65,7 +66,8 @@ describe("Application Load Balancing", () => {
     expect(subnets.Subnets![1].CidrBlock!, "public subnet.").to.endWith("/24");
   });
 
-  it("should have 1 listener.", async () => {
+  it("should have 1 listener.", async function () {
+    this.timeout(10000);
     const listeners = await elb
       .describeListeners({ LoadBalancerArn: alb.LoadBalancerArn })
       .promise();
@@ -92,7 +94,8 @@ describe("Application Load Balancing", () => {
     );
   });
 
-  it("should have 2 target groups.", async () => {
+  it("should have 2 target groups.", async function () {
+    this.timeout(30000);
     const targetGroups = await elb
       .describeTargetGroups({ LoadBalancerArn: alb.LoadBalancerArn })
       .promise();
@@ -214,13 +217,18 @@ describe("Application Load Balancing", () => {
     // console.log(JSON.stringify(ipTargetGroupAttributes.Attributes));
 
     const expectedIpTargetGroupAttributes = [
+      { Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.count", Value: "1" },
       { Key: "stickiness.enabled", Value: "false" },
+      { Key: "target_group_health.unhealthy_state_routing.minimum_healthy_targets.percentage", Value: "off" },
       { Key: "deregistration_delay.timeout_seconds", Value: "300" },
+      { Key: "target_group_health.dns_failover.minimum_healthy_targets.count", Value: "1" },
       { Key: "stickiness.app_cookie.cookie_name", Value: "" },
       { Key: "stickiness.type", Value: "lb_cookie" },
       { Key: "stickiness.lb_cookie.duration_seconds", Value: "86400" },
       { Key: "slow_start.duration_seconds", Value: "0" },
       { Key: "stickiness.app_cookie.duration_seconds", Value: "86400" },
+      { Key: "target_group_health.dns_failover.minimum_healthy_targets.percentage", Value: "off" },
+      { Key: "load_balancing.cross_zone.enabled", Value: "use_load_balancer_configuration" },           
       { Key: "load_balancing.algorithm.type", Value: "round_robin" },
     ];
 

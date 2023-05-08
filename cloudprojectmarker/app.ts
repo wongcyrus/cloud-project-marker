@@ -1,7 +1,7 @@
-import * as Mocha from "mocha";
-import AWS = require("aws-sdk");
-import fs = require("fs");
-import path = require("path");
+import Mocha from "mocha";
+import * as AWS from "aws-sdk";
+import * as fs from "fs";
+import * as path from "path";
 
 const testReportBucket = process.env.TestReportBucket;
 console.log("bucket:" + testReportBucket);
@@ -58,7 +58,7 @@ export const lambdaHandler = async (
       delete require.cache[_sPathSpec];
       mocha.addFile(path.join(testDir, file));
     });
-  // mocha.addFile(path.join(testDir, "security-group-test.js"));
+  // mocha.addFile(path.join(testDir, "alb-test.js"));
 
   mocha.addFile("hook.js");
   process.env.event = JSON.stringify(event);

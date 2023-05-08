@@ -29,7 +29,7 @@ Parameters:
 Globals:
   Function:
     Timeout: 120
-    Runtime: nodejs14.x
+    Runtime: nodejs18.x
 
 Resources:
 
@@ -38,7 +38,7 @@ Resources:
     Properties:
       ContentUri: lib/.
       CompatibleRuntimes:
-        - nodejs14.x
+        - nodejs18.x
       LicenseInfo: 'Available under the MIT-0 license.'
       RetentionPolicy: Delete     
       

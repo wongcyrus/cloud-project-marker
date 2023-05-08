@@ -8,7 +8,9 @@ describe("SQS and SNS", () => {
   const sqs: AWS.SQS = new AWS.SQS();
   const sns: AWS.SNS = new AWS.SNS();
 
-  it("should have 2 SQS queues. ", async () => {
+  it("should have 2 SQS queues. ", async function () {
+    this.timeout(10000);
+    
     const errorQueue = await sqs
       .listQueues({ QueueNamePrefix: "Error_Queue" })
       .promise();
@@ -22,8 +24,10 @@ describe("SQS and SNS", () => {
       processQueue.QueueUrls!.length
     );
   });
-  
-    it("To_Be_Processed_Queue should be FIFO", async () => {
+
+  it("To_Be_Processed_Queue should be FIFO", async function () {
+    this.timeout(10000);
+
     const processQueueUrl = (
       await sqs
         .listQueues({
@@ -37,8 +41,8 @@ describe("SQS and SNS", () => {
         AttributeNames: ["FifoQueue"],
       })
       .promise();
-      
-    console.log(JSON.stringify(processQueueAttributes));  
+
+    console.log(JSON.stringify(processQueueAttributes));
 
     // console.log(processQueueAttributes);
     const isFifoQueue: boolean = JSON.parse(processQueueAttributes!.Attributes!.FifoQueue);
@@ -47,7 +51,9 @@ describe("SQS and SNS", () => {
     ).to.be.true;
   });
 
-  it("To_Be_Processed_Queue should have 300 seconds VisibilityTimeout. ", async () => {
+  it("To_Be_Processed_Queue should have 300 seconds VisibilityTimeout. ", async function () {
+    this.timeout(10000);
+
     const processQueueUrl = (
       await sqs
         .listQueues({
@@ -71,7 +77,8 @@ describe("SQS and SNS", () => {
     ).to.equal(visibilityTimeout);
   });
 
-  it("should have Error Topic with Error_Queue subscription. ", async () => {
+  it("should have Error Topic with Error_Queue subscription.", async function () {
+    this.timeout(10000);
     const topics: SNS.Types.ListTopicsResponse = await sns
       .listTopics()
       .promise();

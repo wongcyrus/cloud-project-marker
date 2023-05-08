@@ -4,7 +4,7 @@ import "mocha";
 import * as AWS from "aws-sdk";
 
 import * as chai from "chai";
-import * as chaiSubset from "chai-subset";
+import chaiSubset from "chai-subset";
 chai.use(chaiSubset);
 
 describe("Database", () => {
@@ -35,7 +35,8 @@ describe("Database", () => {
       "secret for mysql."
     ).to.containSubset(expected);
   });
-  it("should be Aurora MySQL Serverless.", async () => {
+  it("should be Aurora MySQL Serverless.",  async function () {
+    this.timeout(10000);
     const dBClusters = await rds
       .describeDBClusters({
         Filters: [{ Name: "db-cluster-id", Values: ["cloudprojectdatabase"] }],
@@ -50,11 +51,11 @@ describe("Database", () => {
       AllocatedStorage: 1,
       BackupRetentionPeriod: 1,
       DBClusterIdentifier: "cloudprojectdatabase",
-      DBClusterParameterGroup: "default.aurora5.6",
+      DBClusterParameterGroup: "default.aurora-mysql5.7",
       Status: "available",
       CustomEndpoints: [],
       MultiAZ: false,
-      Engine: "aurora",
+      Engine: "aurora-mysql",
       Port: 3306,
       MasterUsername: "dbroot",
       DBClusterOptionGroupMemberships: [],
@@ -69,13 +70,14 @@ describe("Database", () => {
         MinCapacity: 1,
         MaxCapacity: 16,
         AutoPause: true,
+        SecondsBeforeTimeout: 300,
         SecondsUntilAutoPause: 300,
         TimeoutAction: "RollbackCapacityChange",
       },
       DeletionProtection: false,
       HttpEndpointEnabled: false,
       ActivityStreamStatus: "stopped",
-      CopyTagsToSnapshot: false,
+      CopyTagsToSnapshot: true,
       CrossAccountClone: false,
       DomainMemberships: [],
     };
@@ -109,7 +111,8 @@ describe("Database", () => {
     expect(subnets.Subnets![1].CidrBlock!, "private subnet.").to.contain("/22");
   });
 
-  it("should have one DynamoDB Table.", async () => {
+  it("should have one DynamoDB Table.", async function () {
+    this.timeout(10000);
     const tables = await dynamoDB.listTables().promise();
 
     const messageTableName = tables!.TableNames!.find((c) =>
