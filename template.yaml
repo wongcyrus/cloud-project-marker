@@ -28,7 +28,7 @@ Parameters:
     NoEcho: true    
 Globals:
   Function:
-    Timeout: 120
+    Timeout: 600
     Runtime: nodejs18.x
 
 Resources:
