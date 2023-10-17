@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.124",
     "@types/node": "^20.8.6",
-    "aws-sdk": "^2.1473.0",
+    "aws-sdk": "^2.1474.0",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
     "mochawesome": "^7.1.3",
