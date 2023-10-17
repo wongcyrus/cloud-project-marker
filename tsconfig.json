@@ -4,7 +4,7 @@
       "strict": false,
       "preserveConstEnums": true,
       "sourceMap": false,
-      "module":"CommonJS",
+      "module":"NodeNext",
       "moduleResolution":"nodenext",
       "esModuleInterop": true, 
       "skipLibCheck": true,
