@@ -29,23 +29,13 @@ Parameters:
 Globals:
   Function:
     Timeout: 600
-    Runtime: nodejs18.x
 
-Resources:
 
-  LibLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      ContentUri: lib/.
-      CompatibleRuntimes:
-        - nodejs18.x
-      LicenseInfo: 'Available under the MIT-0 license.'
-      RetentionPolicy: Delete     
-      
+Resources:      
   CloudProjectMarkerFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: cloudprojectmarker/
+      Runtime: dotnet8
       Handler: app.lambdaHandler
       Policies:
         - S3CrudPolicy:
@@ -58,8 +48,6 @@ Resources:
         - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
         - arn:aws:iam::aws:policy/ElasticLoadBalancingReadOnly
         - arn:aws:iam::aws:policy/SecretsManagerReadWrite
-      Layers:
-        - !Ref LibLayer
       Environment:
         Variables:
           TestReportBucket: !Ref TestReportBucket        
@@ -71,6 +59,7 @@ Resources:
   CheckMarkWebUiFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Runtime: nodejs20.x
       CodeUri: web-ui/
       Handler: checkMark.lambdaHandler
       Policies:
