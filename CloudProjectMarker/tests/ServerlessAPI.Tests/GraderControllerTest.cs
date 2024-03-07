@@ -1,5 +1,4 @@
 ﻿using ServerlessAPI.Entities;
-using ServerlessAPI.Repositories;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -9,10 +8,10 @@ using Xunit;
 
 namespace ServerlessAPI.Tests;
 
-public class BookControllerTest
+public class GraderControllerTest
 {
     private readonly WebApplicationFactory<Program> webApplication;
-    public BookControllerTest()
+    public GraderControllerTest()
     {
         webApplication = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -21,7 +20,7 @@ public class BookControllerTest
                 {
                     //Mock the repository implementation
                     //to remove infra dependencies for Test project
-                    services.AddScoped<IBookRepository, MockBookRepository>();
+                 
                 });
             });
     }

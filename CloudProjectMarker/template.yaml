@@ -20,13 +20,6 @@ Resources:
       Handler: ServerlessAPI
       Runtime: dotnet8
       MemorySize: 1024
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          SAMPLE_TABLE: !Ref SampleTable
-      Policies:
-        # Give Create/Read/Update/Delete Permissions to the SampleTable
-      - DynamoDBCrudPolicy:
-          TableName: !Ref SampleTable
       Events:
         ProxyResource:
           Type: HttpApi
@@ -39,19 +32,7 @@ Resources:
           Type: HttpApi
           Properties:
             Path: /
-            Method: ANY
-
-  # DynamoDB table to store item: {id: &lt;ID&gt;, name: &lt;NAME&gt;}
-  SampleTable:
-    Type: AWS::Serverless::SimpleTable
-    Properties:
-      TableName: CloudProjectMarkerBookCatalog
-      PrimaryKey:
-        Name: Id
-        Type: String
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
+            Method: AN
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group

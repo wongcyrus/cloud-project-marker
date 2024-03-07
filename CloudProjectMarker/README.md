@@ -128,7 +128,7 @@ You can find more information and examples about filtering Lambda function logs 
 Tests are defined in the `test` folder in this project.
 
 ```bash
-CloudProjectMarker$ dotnet test test/ServerlessAPI.Tests/ServerlessAPI.Tests.csproj 
+CloudProjectMarker$ dotnet test tests/ServerlessAPI.Tests/ServerlessAPI.Tests.csproj 
 ```
 
 ## Cleanup
