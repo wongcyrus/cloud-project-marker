@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -21,7 +22,7 @@ public class GraderController : ControllerBase
         this.logger = logger;
     }
 
-    // GET api/books
+    // GET api/grader
     [HttpGet]
     public async Task<ActionResult<string>> Get(
         [FromQuery(Name = "aws_access_key")] string accessKeyId,
@@ -50,15 +51,11 @@ public class GraderController : ControllerBase
     private async Task<string?> RunUnitTestProcess(string credentials, string trace, string filter)
     {
         var tempDir = GetTemporaryDirectory(trace);
-        var tempCredentialsFilePath = Path.Combine(tempDir, "azureauth.json");
+        var tempCredentialsFilePath = Path.Combine(tempDir, "auth.json");
 
         await System.IO.File.WriteAllLinesAsync(tempCredentialsFilePath, new string[] { credentials });
 
-        string workingDirectoryInfo = Environment.ExpandEnvironmentVariables(@"%HOME%\data\Functions\Tests");
-        string exeLocation = Path.Combine(workingDirectoryInfo, "AzureProjectTest.exe");
-        logger.LogInformation("Unit Test Exe Location: " + exeLocation);
-
-
+       
         if (string.IsNullOrEmpty(filter))
             filter = "test==ProjectTestLib";
         else
@@ -93,7 +90,7 @@ public class GraderController : ControllerBase
             "--work=" + tempDir,
             "--output=" + tempDir,
             "--err=" + tempDir,
-            "--params:AzureCredentialsPath=" + tempCredentialsFilePath + ";trace=" + trace
+            "--params:CredentialsPath=" + tempCredentialsFilePath + ";trace=" + trace
         };
         if (!string.IsNullOrEmpty(where)) runTestParameters.Insert(1, "--where=" + where);
         logger.LogInformation(runTestParameters.ToString());
@@ -105,7 +102,9 @@ public class GraderController : ControllerBase
         logger.LogInformation(xml);
         if (returnCode == 0)
         {
-            return xml;
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xml);           
+            return JsonConvert.SerializeXmlNode(doc);;
         }
         return null;
     }
