@@ -21,4 +21,8 @@
     <InternalsVisibleTo Include="ServerlessAPI.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTestLib\ProjectTestLib.csproj" />
+  </ItemGroup>
+
 </Project>
