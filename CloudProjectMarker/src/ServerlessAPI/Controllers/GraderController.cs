@@ -7,8 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using NUnit.Common;
 using NUnitLite;
-using ProjectTestLib;
-using ProjectTestLib.Helper;
+using ProjectTestsLib;
+using ProjectTestsLib.Helper;
 
 
 namespace ServerlessAPI.Controllers;
@@ -71,7 +71,7 @@ public class GraderController : ControllerBase
         var jsonText = GameController.GetTasksJson();
         var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
         var matchingTask = json?.FirstOrDefault(c => c.Name == where);
-        where = matchingTask?.Filter ?? "test==" + nameof(ProjectTestLib);
+        where = matchingTask?.Filter ?? "test==" + nameof(ProjectTestsLib);
 
 
         logger.LogInformation($@"{tempCredentialsFilePath} {trace} {where}");
@@ -81,7 +81,7 @@ public class GraderController : ControllerBase
 
         var runTestParameters = new List<string>
         {
-            "/test:"+nameof(ProjectTestLib),
+            "/test:"+nameof(ProjectTestsLib),
             "--work=" + tempDir,
             "--output=" + tempDir,
             "--err=" + tempDir,

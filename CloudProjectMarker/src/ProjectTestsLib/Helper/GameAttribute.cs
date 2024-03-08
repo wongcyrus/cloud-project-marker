@@ -1,4 +1,4 @@
-namespace ProjectTestLib.Helper;
+namespace ProjectTestsLib.Helper;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class GameTaskAttribute : Attribute

@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 
 
-namespace ProjectTestLib.Helper
+namespace ProjectTestsLib.Helper
 {
-    public class AwsTestConfig(string accessKeyId, string secretAccessKey, string sessionToken, string region = "us-east-1", string graderParameter = "", string trace = "us-east-1", string filter = nameof(ProjectTestLib))
+    public class AwsTestConfig(string accessKeyId, string secretAccessKey, string sessionToken, string region = "us-east-1", string graderParameter = "", string trace = "us-east-1", string filter = nameof(ProjectTestsLib))
     {
         public string AccessKeyId { get; set; } = accessKeyId;
 

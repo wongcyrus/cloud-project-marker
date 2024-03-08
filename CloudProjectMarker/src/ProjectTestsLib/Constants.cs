@@ -1,4 +1,4 @@
-﻿namespace ProjectTestLib;
+﻿namespace ProjectTestsLib;
 
 public static class Constants
 {

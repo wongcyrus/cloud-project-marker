@@ -2,8 +2,8 @@
 using Amazon.EC2.Model;
 using Amazon.Runtime;
 using NUnit.Framework;
-using ProjectTestLib.Helper;
-namespace ProjectTestLib;
+using ProjectTestsLib.Helper;
+namespace ProjectTestsLib;
 
 [GameClass(2), CancelAfter(Constants.Timeout), Order(2)]
 public class VpcTest
