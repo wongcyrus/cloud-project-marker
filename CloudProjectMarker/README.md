@@ -68,6 +68,12 @@ Run functions locally and invoke them with the `sam local invoke` command.
 CloudProjectMarker$ sam local invoke NetCodeWebAPIServerless --event events/event.json
 ```
 
+Build and run functions locally and invoke them with the `sam local invoke` command.
+
+```bash
+CloudProjectMarker$ sam build && sam local invoke NetCodeWebAPIServerless --event events/event.json
+```
+
 The AWS SAM CLI can also emulate your application's API. Use the `sam local start-api` command to run the API locally on port 3000.
 
 ```bash

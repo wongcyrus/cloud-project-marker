@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTestLib\ProjectTestLib.csproj" />
+    <ProjectReference Include="..\ProjectTestsLib\ProjectTestsLib.csproj" />
   </ItemGroup>
 
 </Project>

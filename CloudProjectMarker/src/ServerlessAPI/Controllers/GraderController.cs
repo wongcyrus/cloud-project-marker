@@ -42,6 +42,8 @@ public class GraderController : ControllerBase
 
         var awsTestConfig = new AwsTestConfig(accessKeyId, secretAccessKey, sessionToken, region, graderParameter, trace, filter);
         var json = await RunUnitTest(awsTestConfig);
+
+        logger.LogInformation(json);
         return Ok(json);
     }
 
@@ -97,7 +99,8 @@ public class GraderController : ControllerBase
             var xml = await System.IO.File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
-            return JsonConvert.SerializeXmlNode(doc); ;
+            // return JsonConvert.SerializeXmlNode(doc);
+            return xml;
         }
         return null;
     }
