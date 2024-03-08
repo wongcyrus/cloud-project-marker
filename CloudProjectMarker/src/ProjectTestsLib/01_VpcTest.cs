@@ -70,7 +70,7 @@ public class VpcTest
 
     [GameTask("In 'Cloud Project VPC', No subnet assocaietes to the Main RouteTable and it contains only one local route.", 2, 10, groupNumber: 4)]
     [Test, Order(4)]
-    public async Task Test03_2_VpcOf5RouteTable()
+    public async Task Test03_2_VpcMainRouteTable()
     {
         var describeVpcsRequest = new DescribeVpcsRequest();
         describeVpcsRequest.Filters.Add(new Filter("tag:Name", ["Cloud Project VPC"]));
@@ -82,14 +82,15 @@ public class VpcTest
         var routeTables = describeRouteTablesResponse.RouteTables;
         var mainRouteTable = routeTables.FirstOrDefault(c => c.Routes.Count == 1);
         Assert.That(mainRouteTable, Is.Not.Null);
-        Assert.That(mainRouteTable!.Associations.Count, Is.EqualTo(0));
-        Assert.That(mainRouteTable.Routes.Count(), Is.EqualTo(1));
-        Assert.That(mainRouteTable.Routes[0].DestinationCidrBlock, Is.EqualTo("10.0.0.0/16"));
-        
-        // Assert.That(mainRouteTable.Routes[0].Origin, Is.EqualTo("local"));
-
-
-
+        Assert.That(mainRouteTable!.Associations.Count, Is.EqualTo(1));
+        Assert.Multiple(() =>
+        {
+            Assert.That(mainRouteTable!.Associations[0].Main, Is.True);
+            Assert.That(mainRouteTable!.Associations[0].SubnetId, Is.Null);
+            Assert.That(mainRouteTable.Routes.Count(), Is.EqualTo(1));
+            Assert.That(mainRouteTable.Routes[0].DestinationCidrBlock, Is.EqualTo("10.0.0.0/16"));
+            Assert.That(mainRouteTable.Routes[0].GatewayId, Is.EqualTo("local"));
+        });
     }
 
 
