@@ -33,14 +33,22 @@ namespace ProjectTestsLib.Helper
 
         public CredentialHelper()
         {
-            var credentialsPath = TestContext.Parameters.Get("AwsTestConfig", null);
-            if (credentialsPath != null)
+            var credentialPath = TestContext.Parameters.Get("AwsTestConfig", null);
+            if (credentialPath == null && File.Exists("/workspaces/cloud-project-marker/CloudProjectMarker/events/awsTestConfig.json"))
             {
-                credentialsPath = credentialsPath.Trim('\'');
-                var awsTestConfigString = File.ReadAllText(credentialsPath);
+                credentialPath = "/workspaces/cloud-project-marker/CloudProjectMarker/events/awsTestConfig.json";
+                // Set the default AWS region environment variable
+                Environment.SetEnvironmentVariable("AWS_REGION", "us-east-1");
+            }
+
+            if (credentialPath != null)
+            {
+                credentialPath = credentialPath.Trim('\'');
+                var awsTestConfigString = File.ReadAllText(credentialPath);
                 AwsTestConfig = JsonConvert.DeserializeObject<AwsTestConfig>(awsTestConfigString);
             }
         }
+
 
         public SessionAWSCredentials GetCredential()
         {

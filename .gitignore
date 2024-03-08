@@ -14,3 +14,4 @@ testResult.json
 env.json
 CloudProjectMarker/events/credentials.env
 CloudProjectMarker/events/event.json
+CloudProjectMarker/events/awsTestConfig.json

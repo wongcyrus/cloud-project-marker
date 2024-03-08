@@ -59,6 +59,7 @@ public class GraderController : ControllerBase
         var credentials = JsonConvert.SerializeObject(awsTestConfig);
         var tempCredentialsFilePath = Path.Combine(tempDir, "awsTestConfig.json");
 
+
         await System.IO.File.WriteAllLinesAsync(tempCredentialsFilePath, [credentials]);
 
         var where = awsTestConfig.Filter;
