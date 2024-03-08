@@ -20,9 +20,6 @@
     <PackageReference Include="NUnitLite" Version="4.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <InternalsVisibleTo Include="ServerlessAPI.Tests" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectTestsLib\ProjectTestsLib.csproj" />

@@ -1,4 +1,5 @@
 {
     "typescript.tsdk": "node_modules/typescript/lib",
-    "dotnet-test-explorer.testProjectPath": "**/*[Tt]ests.@(csproj|vbproj|fsproj)"
+    "dotnet-test-explorer.testProjectPath": "**/*Tests*.csproj",
+    "dotnet-test-explorer.autoWatch": true
 }
