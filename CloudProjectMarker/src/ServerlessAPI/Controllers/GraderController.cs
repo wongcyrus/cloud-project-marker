@@ -31,7 +31,7 @@ public class GraderController : ControllerBase
         [FromQuery(Name = "aws_session_token")] string sessionToken,
         [FromQuery] string region = "us-east-1",
         [FromQuery] string trace = "anonymous",
-        [FromQuery] string filter = nameof(ProjectTestLib),
+        [FromQuery] string filter = "",
         [FromQuery] string graderParameter = "")
     {
         logger.LogInformation("GraderController.Get called");
@@ -40,14 +40,9 @@ public class GraderController : ControllerBase
             return BadRequest("Invalid request");
         }
 
-        
-        
         var awsTestConfig = new AwsTestConfig(accessKeyId, secretAccessKey, sessionToken, region, graderParameter, trace, filter);
-        logger.LogInformation(awsTestConfig.ToString());
-
-        var xml = await RunUnitTest(awsTestConfig);
-
-        return Ok(xml);
+        var json = await RunUnitTest(awsTestConfig);
+        return Ok(json);
     }
 
     private static string GetTemporaryDirectory(string trace)
@@ -67,19 +62,15 @@ public class GraderController : ControllerBase
         var where = awsTestConfig.Filter;
         var trace = awsTestConfig.Trace;
 
-        if (string.IsNullOrEmpty(where))
-            where = "test==" + nameof(ProjectTestLib);
-        else
+        var serializerSettings = new JsonSerializerSettings
         {
-            var serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-            var jsonText = GameController.GetTasksJson();
-            var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
-            var matchingTask = json?.FirstOrDefault(c => c.Name == where);
-            where = matchingTask?.Filter ?? "test==" + nameof(ProjectTestLib);
-        }
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+        var jsonText = GameController.GetTasksJson();
+        var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
+        var matchingTask = json?.FirstOrDefault(c => c.Name == where);
+        where = matchingTask?.Filter ?? "test==" + nameof(ProjectTestLib);
+
 
         logger.LogInformation($@"{tempCredentialsFilePath} {trace} {where}");
 

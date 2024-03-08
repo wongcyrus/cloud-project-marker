@@ -39,8 +39,9 @@ namespace ServerlessAPI.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            // TODO: Implement logic to retrieve all games
-            return Ok(GetTasksJson());
+            var json = GetTasksJson();
+            logger.LogInformation(json);
+            return Ok(json);
         }
 
         private static IEnumerable<Type> GetTypesWithHelpAttribute(Assembly assembly)
@@ -100,7 +101,7 @@ namespace ServerlessAPI.Controllers
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
                 allCompletedTask = allCompletedTask.OrderBy(c => c.GameClassOrder).ThenBy(c => c.Tests.First()).ToList();
-                var json = JsonConvert.SerializeObject(allCompletedTask.ToArray(), serializerSettings);
+                var json = JsonConvert.SerializeObject(allCompletedTask.ToArray(), serializerSettings);                
                 return json;
             }
         }

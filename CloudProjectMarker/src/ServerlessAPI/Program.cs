@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Logger
 builder.Logging
-        .ClearProviders()
-        .AddJsonConsole();
+        .ClearProviders().AddConsole();
+        // .AddJsonConsole();
  
 // Add services to the container.
 builder.Services

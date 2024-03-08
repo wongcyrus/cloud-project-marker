@@ -5,7 +5,7 @@ using NUnit.Framework;
 using ProjectTestLib.Helper;
 namespace ProjectTestLib;
 
-[GameClass(1), CancelAfter(Constants.Timeout)]
+[GameClass(2), CancelAfter(Constants.Timeout), Order(2)]
 public class VpcTest
 {
     private SessionAWSCredentials Credential { get; set; }
@@ -15,7 +15,7 @@ public class VpcTest
     public void Setup()
     {
         var credentialHelper = new CredentialHelper();
-        Credential = credentialHelper.GetCredential();                
+        Credential = credentialHelper.GetCredential();
         AcctEc2Client = new AmazonEC2Client(Credential);
     }
 
@@ -29,7 +29,7 @@ public class VpcTest
 
         Console.WriteLine(describeVpcsResponse.Vpcs.Count());
 
-        
+
         Assert.That(1, Is.Not.Null);
     }
 }
