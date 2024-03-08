@@ -4,7 +4,6 @@ using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
 [GameClass(1), CancelAfter(Constants.Timeout), Order(1)]
-[TestFixture]
 public class CredentialTest
 {
 

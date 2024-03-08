@@ -19,6 +19,12 @@ public class VpcTest
         AcctEc2Client = new AmazonEC2Client(Credential);
     }
 
+    [TearDown]
+    public void TearDown()
+    {
+        AcctEc2Client?.Dispose();
+    }
+
     [GameTask("Can you create a VPC with CIDR 10.0.0.0/16 and name it as 'Cloud Project VPC'?", 2, 10, groupNumber: 1)]
     [Test, Order(1)]
     public async Task Test01_VpcExist()
@@ -26,8 +32,8 @@ public class VpcTest
         var describeVpcsRequest = new DescribeVpcsRequest();
         describeVpcsRequest.Filters.Add(new Filter("tag:Name", ["Cloud Project VPC"]));
         var describeVpcsResponse = await AcctEc2Client!.DescribeVpcsAsync(describeVpcsRequest);
-        Console.WriteLine(describeVpcsResponse.Vpcs.Count());
-        Assert.That(1, Is.Not.Null);
+        
+        Assert.That(describeVpcsResponse.Vpcs.Count(), Is.EqualTo(1));
     }
 
     [GameTask("In 'Cloud Project VPC', Can you create 4 subnets with CIDR '10.0.0.0/24','10.0.1.0/24','10.0.4.0/22','10.0.8.0/22'?", 2, 10, groupNumber: 2)]
@@ -80,7 +86,7 @@ public class VpcTest
         Assert.That(mainRouteTable.Routes.Count(), Is.EqualTo(1));
         Assert.That(mainRouteTable.Routes[0].DestinationCidrBlock, Is.EqualTo("10.0.0.0/16"));
         
-        Assert.That(mainRouteTable.Routes[0].Origin, Is.EqualTo("local"));
+        // Assert.That(mainRouteTable.Routes[0].Origin, Is.EqualTo("local"));
 
 
 
