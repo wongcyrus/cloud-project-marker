@@ -8,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using NUnit.Common;
 using NUnitLite;
 using ProjectTestLib;
+using ProjectTestLib.Helper;
 
 
 namespace ServerlessAPI.Controllers;
@@ -29,15 +30,22 @@ public class GraderController : ControllerBase
         [FromQuery(Name = "aws_secret_access_key")] string secretAccessKey,
         [FromQuery(Name = "aws_session_token")] string sessionToken,
         [FromQuery] string region = "us-east-1",
+        [FromQuery] string trace = "anonymous",
+        [FromQuery] string filter = nameof(ProjectTestLib),
         [FromQuery] string graderParameter = "")
     {
         logger.LogInformation("GraderController.Get called");
-        if (string.IsNullOrEmpty(accessKeyId) || string.IsNullOrEmpty(secretAccessKey) || string.IsNullOrEmpty(region) || string.IsNullOrEmpty(sessionToken))
+        if (string.IsNullOrEmpty(accessKeyId) || string.IsNullOrEmpty(secretAccessKey) || string.IsNullOrEmpty(sessionToken))
         {
             return BadRequest("Invalid request");
         }
 
-        var xml = await RunUnitTestProcess(accessKeyId, "cywong", "");
+        
+        
+        var awsTestConfig = new AwsTestConfig(accessKeyId, secretAccessKey, sessionToken, region, graderParameter, trace, filter);
+        logger.LogInformation(awsTestConfig.ToString());
+
+        var xml = await RunUnitTest(awsTestConfig);
 
         return Ok(xml);
     }
@@ -48,63 +56,57 @@ public class GraderController : ControllerBase
         Directory.CreateDirectory(tempDirectory);
         return tempDirectory;
     }
-    private async Task<string?> RunUnitTestProcess(string credentials, string trace, string filter)
+    private async Task<string?> RunUnitTest(AwsTestConfig awsTestConfig)
     {
-        var tempDir = GetTemporaryDirectory(trace);
-        var tempCredentialsFilePath = Path.Combine(tempDir, "auth.json");
+        var tempDir = GetTemporaryDirectory(awsTestConfig.Trace);
+        var credentials = JsonConvert.SerializeObject(awsTestConfig);
+        var tempCredentialsFilePath = Path.Combine(tempDir, "awsTestConfig.json");
 
-        await System.IO.File.WriteAllLinesAsync(tempCredentialsFilePath, new string[] { credentials });
+        await System.IO.File.WriteAllLinesAsync(tempCredentialsFilePath, [credentials]);
 
-       
-        if (string.IsNullOrEmpty(filter))
-            filter = "test==ProjectTestLib";
+        var where = awsTestConfig.Filter;
+        var trace = awsTestConfig.Trace;
+
+        if (string.IsNullOrEmpty(where))
+            where = "test==" + nameof(ProjectTestLib);
         else
         {
-            // var serializerSettings = new JsonSerializerSettings
-            // {
-            //     ContractResolver = new CamelCasePropertyNamesContractResolver()
-            // };
-            // var jsonText = GameTaskFunction.GetTasksJson(false);
-            // var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
-            // filter = json.First(c => c.Name == filter).Filter;
-
-            // TODO: Implement filter
-            filter = "test==ProjectTestLib";
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            var jsonText = GameController.GetTasksJson();
+            var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
+            var matchingTask = json?.FirstOrDefault(c => c.Name == where);
+            where = matchingTask?.Filter ?? "test==" + nameof(ProjectTestLib);
         }
 
-        logger.LogInformation($@"{tempCredentialsFilePath} {tempDir} {trace} {filter}");
-
-
-        var where = filter;
-        logger.LogInformation("tempCredentialsFilePath:" + tempCredentialsFilePath);
-        logger.LogInformation("trace:" + trace);
-        logger.LogInformation("where:" + where);
-
+        logger.LogInformation($@"{tempCredentialsFilePath} {trace} {where}");
 
         var strWriter = new StringWriter();
         var autoRun = new AutoRun(typeof(Constants).GetTypeInfo().Assembly);
 
         var runTestParameters = new List<string>
         {
-            "/test:ProjectTestLib",
+            "/test:"+nameof(ProjectTestLib),
             "--work=" + tempDir,
             "--output=" + tempDir,
             "--err=" + tempDir,
-            "--params:CredentialsPath=" + tempCredentialsFilePath + ";trace=" + trace
+            "--params:AwsTestConfig=" + tempCredentialsFilePath + ";trace=" + trace
         };
-        if (!string.IsNullOrEmpty(where)) runTestParameters.Insert(1, "--where=" + where);
-        logger.LogInformation(runTestParameters.ToString());
-        var returnCode = autoRun.Execute(runTestParameters.ToArray(), new ExtendedTextWrapper(strWriter), Console.In);
-
-        var xml = await System.IO.File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
-
+        runTestParameters.Insert(1, "--where=" + where);
+        logger.LogInformation(string.Join(" ", runTestParameters));
+        var returnCode = autoRun.Execute([.. runTestParameters], new ExtendedTextWrapper(strWriter), Console.In);
+        logger.LogInformation("returnCode:" + returnCode);
         logger.LogInformation(strWriter.ToString());
-        logger.LogInformation(xml);
+
+        // logger.LogInformation(xml);
         if (returnCode == 0)
         {
+            var xml = await System.IO.File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(xml);           
-            return JsonConvert.SerializeXmlNode(doc);;
+            doc.LoadXml(xml);
+            return JsonConvert.SerializeXmlNode(doc); ;
         }
         return null;
     }

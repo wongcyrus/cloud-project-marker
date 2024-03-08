@@ -43,14 +43,14 @@ namespace ServerlessAPI.Controllers
             return Ok(GetTasksJson());
         }
 
-        private IEnumerable<Type> GetTypesWithHelpAttribute(Assembly assembly)
+        private static IEnumerable<Type> GetTypesWithHelpAttribute(Assembly assembly)
         {
             return from Type type in assembly!.GetTypes()
                    where type.GetCustomAttributes(typeof(GameClassAttribute), true).Length > 0
                    select type;
         }
 
-        public string GetTasksJson()
+        public static string GetTasksJson()
         {
             {
                 var assembly = Assembly.GetAssembly(type: typeof(GameClassAttribute));
