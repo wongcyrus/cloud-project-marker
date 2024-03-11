@@ -11,11 +11,11 @@ public static class QueryHelper
         return describeVpcsResponse.Vpcs[0].VpcId;
     }
 
-    public static VpcEndpoint GetEndPointByServiceName(AmazonEC2Client acctEc2Client, string ServiceName)
+    public static VpcEndpoint GetEndPointByServiceName(AmazonEC2Client acctEc2Client, string serviceName)
     {
         var describeVpcEndpointsRequest = new DescribeVpcEndpointsRequest();
         describeVpcEndpointsRequest.Filters.Add(new Filter("vpc-id", [GetVpcId(acctEc2Client)]));
-        describeVpcEndpointsRequest.Filters.Add(new Filter("service-name", [ServiceName]));
+        describeVpcEndpointsRequest.Filters.Add(new Filter("service-name", [serviceName]));
         var describeVpcEndpointsResponse = acctEc2Client.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest).Result;
         var vpcEndpoints = describeVpcEndpointsResponse.VpcEndpoints;
         return vpcEndpoints[0];

@@ -74,9 +74,9 @@ public class VpcTest
         var routeTables = describeRouteTablesResponse.RouteTables;
         var mainRouteTable = routeTables.FirstOrDefault(c => c.Routes.Count == 1);
         Assert.That(mainRouteTable, Is.Not.Null);
-        Assert.That(mainRouteTable!.Associations, Has.Count.EqualTo(1));
         Assert.Multiple(() =>
         {
+            Assert.That(mainRouteTable!.Associations, Has.Count.EqualTo(1));
             Assert.That(mainRouteTable!.Associations[0].Main, Is.True);
             Assert.That(mainRouteTable!.Associations[0].SubnetId, Is.Null);
             Assert.That(mainRouteTable.Routes, Has.Count.EqualTo(1));
