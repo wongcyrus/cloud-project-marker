@@ -1,141 +1,53 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  cloudprojectmaker
-  
-Metadata:
-  AWS::ServerlessRepo::Application:
-    Name: cloud-project-maker
-    Description: >
-      Lambda Function to grade the cloud project assignment.
-    Author: Cyrus Wong
-    SpdxLicenseId: Apache-2.0
-    LicenseUrl: LICENSE.txt
-    ReadmeUrl: README.md
-    Labels: ['lambda','AWS_Educate']
-    HomePageUrl: https://github.com/wongcyrus/managed-aws-educate-classroom
-    SemanticVersion: 0.0.2
-    SourceCodeUrl: https://github.com/wongcyrus/managed-aws-educate-classroom
-    
-Parameters:
-  RecaptchaSiteKey:
-    Type: String
-    Default: ""
-    NoEcho: true
-  RecaptchaSercetKey:
-    Type: String
-    Default: ""
-    NoEcho: true    
+  Sample SAM Template for CloudProjectMarker
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 600
-    Runtime: nodejs18.x
-
+    Timeout: 100
+    Tracing: Active
+  Api:
+    TracingEnabled: true
 Resources:
-
-  LibLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      ContentUri: lib/.
-      CompatibleRuntimes:
-        - nodejs18.x
-      LicenseInfo: 'Available under the MIT-0 license.'
-      RetentionPolicy: Delete     
-      
-  CloudProjectMarkerFunction:
+  NetCodeWebAPIServerless:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: cloudprojectmarker/
-      Handler: app.lambdaHandler
-      Policies:
-        - S3CrudPolicy:
-            BucketName: !Ref 'TestReportBucket'
-      # You may need to add more read only policies if you hit error in Lambda but not in cloud9 local invoke.
-        - arn:aws:iam::aws:policy/job-function/ViewOnlyAccess
-        - arn:aws:iam::aws:policy/AmazonSQSReadOnlyAccess
-        - arn:aws:iam::aws:policy/AWSLambda_ReadOnlyAccess
-        - arn:aws:iam::aws:policy/IAMReadOnlyAccess
-        - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
-        - arn:aws:iam::aws:policy/ElasticLoadBalancingReadOnly
-        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
-      Layers:
-        - !Ref LibLayer
-      Environment:
-        Variables:
-          TestReportBucket: !Ref TestReportBucket        
-
-# WebUI for student registration.
-  HttpApi:
-    Type: AWS::Serverless::HttpApi
-    
-  CheckMarkWebUiFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: web-ui/
-      Handler: checkMark.lambdaHandler
-      Policies:
-        - LambdaInvokePolicy:
-            FunctionName: !Ref CloudProjectMarkerFunction
-      Environment:
-        Variables:
-          CloudProjectMarkerFunction: !GetAtt CloudProjectMarkerFunction.Arn
-          RecaptchaSiteKey: !Ref RecaptchaSiteKey
-          RecaptchaSercetKey: !Ref RecaptchaSercetKey
+      Description: A simple example includes a .NET Core WebAPI App with DynamoDB
+        table.
+      CodeUri: ./src/ServerlessAPI/
+      Handler: ServerlessAPI
+      Runtime: dotnet8
+      MemorySize: 1024
       Events:
-        ExplicitApi:
+        ProxyResource:
           Type: HttpApi
           Properties:
-            ApiId: !Ref HttpApi
+            PayloadFormatVersion: '2.0'
+            Path: /{proxy+}
             Method: ANY
+        RootResource:
+          PayloadFormatVersion: '2.0'
+          Type: HttpApi
+          Properties:
             Path: /
+            Method: AN
 
-  TestReportBucket:
-    Type: AWS::S3::Bucket
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
     Properties:
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false        
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: error.html
-      OwnershipControls:
-        Rules:
-           - ObjectOwnership: BucketOwnerEnforced
-    DeletionPolicy: Delete
-    
-  TestReportBucketPolicy:
-    Type: AWS::S3::BucketPolicy
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
     Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: PublicReadForGetBucketObjects
-            Effect: Allow
-            Principal: '*'
-            Action: 's3:GetObject'
-            Resource: !Join 
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref TestReportBucket
-                - /*
-      Bucket: !Ref TestReportBucket  
-      
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
 Outputs:
-  CloudProjectMarkerFunction:
-    Description: "CloudProjectMarkerFunction"
-    Value: !GetAtt CloudProjectMarkerFunction.Arn
-  CheckMarkWebUiUrl:
-    Description: URL for teacher to get the assume role URL for your student account.
-    Value: !Sub 'https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/'
-  TestReportBucket:
-    Value: !Ref TestReportBucket
-  TestReportBucketSecureURL:
-    Value: !Join 
-      - ''
-      - - 'https://'
-        - !GetAtt 
-          - TestReportBucket
-          - DomainName
-        - '/mochawesome.html'
+  WebEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"

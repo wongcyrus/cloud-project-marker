@@ -1,0 +1,9 @@
+{
+    "AccessKeyId": "{aws_access_key}",
+    "SecretAccessKey": "{aws_secret_access_key}",
+    "SessionToken": "{aws_session_token}",
+    "Region": "us-east-1",
+    "GraderParameter": "",
+    "Trace": "anonymous",
+    "Filter": ""
+}
