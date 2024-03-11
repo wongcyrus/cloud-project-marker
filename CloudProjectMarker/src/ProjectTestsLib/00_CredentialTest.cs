@@ -8,7 +8,7 @@ public class CredentialTest
 {
 
 
-    [GameTask("Can you submit your AWS Academy Leaner Lab credentials?", 2, 10, 1)]
+    [GameTask("Submit your AWS Academy Leaner Lab credentials.", 2, 10)]
     [Test]
     public async Task Test01_ValidCredential()
     {
