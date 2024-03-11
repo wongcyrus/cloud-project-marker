@@ -15,7 +15,7 @@ public class CredentialTest
         var credentialHelper = new CredentialHelper();
         var credential = credentialHelper.GetCredential();
 
-        AmazonSecurityTokenServiceClient client = new AmazonSecurityTokenServiceClient(credential);
+        AmazonSecurityTokenServiceClient client = new(credential);
         var response = await client.GetCallerIdentityAsync(new Amazon.SecurityToken.Model.GetCallerIdentityRequest());     
         Assert.That(response.Account, Is.Not.Null);
         TestContext.Out.Write(response.Account);
