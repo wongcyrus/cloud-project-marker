@@ -12,17 +12,15 @@ public class VpcTest
     private AmazonEC2Client? AcctEc2Client { get; set; }
     private string? VpcId { get; set; }
 
+
+
     [SetUp]
     public void Setup()
     {
         var credentialHelper = new CredentialHelper();
         Credential = credentialHelper.GetCredential();
         AcctEc2Client = new AmazonEC2Client(Credential);
-
-        var describeVpcsRequest = new DescribeVpcsRequest();
-        describeVpcsRequest.Filters.Add(new Filter("tag:Name", ["Cloud Project VPC"]));
-        var describeVpcsResponse = AcctEc2Client!.DescribeVpcsAsync(describeVpcsRequest).Result;
-        VpcId = describeVpcsResponse.Vpcs[0].VpcId;
+        VpcId = QueryHelper.GetVpcId(AcctEc2Client);
     }
 
     [TearDown]

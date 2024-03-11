@@ -45,6 +45,6 @@ If already installed check if new version is available.
 
 Deploy application
 ```
-    cd "CloudProjectMarker/src/ServerlessAPI"
+    cd "src/ServerlessAPI"
     sam deploy
 ```

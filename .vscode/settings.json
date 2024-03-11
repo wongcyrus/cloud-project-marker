@@ -1,4 +1,4 @@
 {
     "typescript.tsdk": "node_modules/typescript/lib",
-    "dotnet-test-explorer.testProjectPath": "CloudProjectMarker/src/ProjectTestsLib",
+    "dotnet-test-explorer.testProjectPath": "src/ProjectTestsLib",
 }
