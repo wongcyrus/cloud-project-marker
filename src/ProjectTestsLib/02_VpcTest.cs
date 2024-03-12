@@ -6,19 +6,16 @@ using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
 [GameClass(2), CancelAfter(Constants.Timeout), Order(2)]
-public class VpcTest
+public class VpcTest: AwsTest
 {
-    private SessionAWSCredentials? Credential { get; set; }
     private AmazonEC2Client? AcctEc2Client { get; set; }
     private string? VpcId { get; set; }
 
 
-
     [SetUp]
-    public void Setup()
+    public new void Setup()
     {
-        var credentialHelper = new CredentialHelper();
-        Credential = credentialHelper.GetCredential();
+        base.Setup();
         AcctEc2Client = new AmazonEC2Client(Credential);
         VpcId = QueryHelper.GetVpcId(AcctEc2Client);
     }

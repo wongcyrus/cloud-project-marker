@@ -8,17 +8,15 @@ using Amazon.SimpleNotificationService.Model;
 namespace ProjectTestsLib;
 
 [GameClass(4), CancelAfter(Constants.Timeout), Order(4)]
-public class SqsSnsTest
+public class SqsSnsTest : AwsTest
 {
-    private SessionAWSCredentials? Credential { get; set; }
     private AmazonSimpleNotificationServiceClient? SnsClient { get; set; }
     private AmazonSQSClient? SqsClient { get; set; }
 
     [SetUp]
-    public void Setup()
+    public new void Setup()
     {
-        var credentialHelper = new CredentialHelper();
-        Credential = credentialHelper.GetCredential();
+        base.Setup();
         SnsClient = new AmazonSimpleNotificationServiceClient(Credential);
         SqsClient = new AmazonSQSClient(Credential);
     }
@@ -115,7 +113,6 @@ public class SqsSnsTest
         });
         Assert.That(processQueueAttribute, Is.Not.Null);
         Assert.That(processQueueAttribute.Attributes, Contains.Key("RedrivePolicy"));
-        Console.WriteLine(processQueueAttribute.Attributes["RedrivePolicy"]);
 
         var deadLetterQueueAttribute = await SqsClient!.GetQueueAttributesAsync(new GetQueueAttributesRequest
         {

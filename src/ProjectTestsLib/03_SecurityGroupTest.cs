@@ -6,9 +6,8 @@ using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
 [GameClass(3), CancelAfter(Constants.Timeout), Order(3)]
-public class SecurityGroupTest
+public class SecurityGroupTest : AwsTest
 {
-    private SessionAWSCredentials? Credential { get; set; }
     private AmazonEC2Client? AcctEc2Client { get; set; }
 
     private SecurityGroup? AlbSecurityGroup { get; set; }
@@ -23,10 +22,9 @@ public class SecurityGroupTest
 
 
     [SetUp]
-    public void Setup()
+    public new void Setup()
     {
-        var credentialHelper = new CredentialHelper();
-        Credential = credentialHelper.GetCredential();
+        base.Setup();
         AcctEc2Client = new AmazonEC2Client(Credential);
         AlbSecurityGroup = QueryHelper.GetSecurityGroupByName(AcctEc2Client, "ALB Security Group");
         LambdaSecurityGroup = QueryHelper.GetSecurityGroupByName(AcctEc2Client, "Web Lambda Security Group");
@@ -107,7 +105,6 @@ public class SecurityGroupTest
         Assert.That(gatewayEndpointEgressRule, Is.Not.Null);
         Assert.That(gatewayEndpointEgressRule.PrefixListIds, Has.Count.EqualTo(2));
         var gatewayEndpointPrefixListIds = gatewayEndpointEgressRule.PrefixListIds.Select(x => x.Id).ToArray();
-        Console.WriteLine(string.Join(", ", gatewayEndpointPrefixListIds));
 
         DescribePrefixListsRequest describePrefixListsRequest = new()
         {
@@ -131,7 +128,7 @@ public class SecurityGroupTest
             Assert.That(DatabaseSecurityGroup!.IpPermissions[0].FromPort, Is.EqualTo(3306));
             Assert.That(DatabaseSecurityGroup!.IpPermissions[0].ToPort, Is.EqualTo(3306));
             Assert.That(DatabaseSecurityGroup!.IpPermissions[0].UserIdGroupPairs[0].GroupId, Is.EqualTo(LambdaSecurityGroup!.GroupId));
-            Assert.That(DatabaseSecurityGroup!.IpPermissionsEgress, Has.Count.EqualTo(1));;
+            Assert.That(DatabaseSecurityGroup!.IpPermissionsEgress, Has.Count.EqualTo(1)); ;
         });
     }
 }
