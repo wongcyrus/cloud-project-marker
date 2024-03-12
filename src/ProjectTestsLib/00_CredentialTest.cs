@@ -3,7 +3,7 @@ using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
-[GameClass(1), CancelAfter(Constants.Timeout), Order(1)]
+[GameClass(0), CancelAfter(Constants.Timeout), Order(0)]
 public class CredentialTest
 {
 

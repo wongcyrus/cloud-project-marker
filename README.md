@@ -145,6 +145,13 @@ To delete the sample application that you created, use the AWS CLI. Assuming you
 sam delete --stack-name CloudProjectMarker
 ```
 
+## Packages update
+
+1. Install ```dotnet tool install --global dotnet-outdated-tool```.
+2. Go to "src/ProjectTestsLib", and run ```dotnet outdated --upgrade```.
+3. Go to "src/ServerlessAPI", and run ```dotnet outdated --upgrade```.
+
+
 ## Resources
 
 See the [AWS SAM developer guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html) for an introduction to SAM specification, the SAM CLI, and serverless application concepts.

@@ -5,7 +5,7 @@ using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
-[GameClass(2), CancelAfter(Constants.Timeout), Order(2)]
+[GameClass(1), CancelAfter(Constants.Timeout), Order(1)]
 public class VpcTest
 {
     private SessionAWSCredentials? Credential { get; set; }
