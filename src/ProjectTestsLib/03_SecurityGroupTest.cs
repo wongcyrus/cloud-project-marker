@@ -5,7 +5,7 @@ using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
-[GameClass(2), CancelAfter(Constants.Timeout), Order(2)]
+[GameClass(3), CancelAfter(Constants.Timeout), Order(3)]
 public class SecurityGroupTest
 {
     private SessionAWSCredentials? Credential { get; set; }
