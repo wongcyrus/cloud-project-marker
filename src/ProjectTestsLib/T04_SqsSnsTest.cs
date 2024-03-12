@@ -7,7 +7,7 @@ using Amazon.SimpleNotificationService.Model;
 namespace ProjectTestsLib;
 
 [GameClass(4), CancelAfter(Constants.Timeout), Order(4)]
-public class SqsSnsTest : AwsTest
+public class T04_SqsSnsTest : AwsTest
 {
     private AmazonSimpleNotificationServiceClient? SnsClient { get; set; }
     private AmazonSQSClient? SqsClient { get; set; }

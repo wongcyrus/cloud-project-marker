@@ -7,7 +7,7 @@ using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
 [GameClass(5), CancelAfter(Constants.Timeout), Order(5)]
-public class DatabaseTest : AwsTest
+public class T05_DatabaseTest : AwsTest
 {
     private AmazonSecretsManagerClient? SecretsManagerClient { get; set; }
     private AmazonDynamoDBClient? DynamoDBClient { get; set; }

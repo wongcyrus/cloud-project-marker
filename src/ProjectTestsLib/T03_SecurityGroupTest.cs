@@ -5,7 +5,7 @@ using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
 [GameClass(3), CancelAfter(Constants.Timeout), Order(3)]
-public class SecurityGroupTest : AwsTest
+public class T03_SecurityGroupTest : AwsTest
 {
     private AmazonEC2Client? AcctEc2Client { get; set; }
 
