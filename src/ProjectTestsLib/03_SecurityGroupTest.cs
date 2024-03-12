@@ -1,6 +1,5 @@
 using Amazon.EC2;
 using Amazon.EC2.Model;
-using Amazon.Runtime;
 using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;

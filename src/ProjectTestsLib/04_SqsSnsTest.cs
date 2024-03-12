@@ -1,5 +1,4 @@
 using Amazon.SimpleNotificationService;
-using Amazon.Runtime;
 using Amazon.SQS;
 using NUnit.Framework;
 using ProjectTestsLib.Helper;

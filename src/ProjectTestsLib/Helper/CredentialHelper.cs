@@ -40,13 +40,15 @@ namespace ProjectTestsLib.Helper
                 // Set the default AWS region environment variable
                 Environment.SetEnvironmentVariable("AWS_REGION", "us-east-1");
             }
-
-            if (credentialPath != null)
+            else
             {
-                credentialPath = credentialPath.Trim('\'');
-                var awsTestConfigString = File.ReadAllText(credentialPath);
-                AwsTestConfig = JsonConvert.DeserializeObject<AwsTestConfig>(awsTestConfigString);
+                Assert.Fail("AwsTestConfig parameter is not set.");
             }
+            credentialPath = credentialPath!.Trim('\'');
+            var awsTestConfigString = File.ReadAllText(credentialPath);
+            AwsTestConfig = JsonConvert.DeserializeObject<AwsTestConfig>(awsTestConfigString);
+
+            Environment.SetEnvironmentVariable("AWS_REGION", AwsTestConfig!.Region);
         }
 
 
