@@ -405,6 +405,8 @@ __pycache__/
 # End of https://www.gitignore.io/api/macos,linux,windows,sublimetext,dotsettings,visualstudio,visualstudiocode
 
 .aws-sam/*
+.mono/*
 events/credentials.env
 events/event.json
 events/awsTestConfig.json
+
