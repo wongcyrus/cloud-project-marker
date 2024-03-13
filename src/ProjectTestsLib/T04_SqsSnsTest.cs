@@ -126,10 +126,9 @@ public class T04_SqsSnsTest : AwsTest
     [Test, Order(5)]
     public async Task Test05_ErrorTopicSubscribesToErrorQueue()
     {
-        var topics = SnsClient!.ListTopicsAsync().Result;
-        var errorTopic = topics.Topics.FirstOrDefault(x => x.TopicArn.Contains("ErrorTopic"));
+        var errorTopic =  QueryHelper.GetSnsTopicByNameContain(SnsClient!, "ErrorTopic");       
         Assert.That(errorTopic, Is.Not.Null);
-        var subscriptions = await SnsClient.ListSubscriptionsByTopicAsync(new ListSubscriptionsByTopicRequest
+        var subscriptions = await SnsClient!.ListSubscriptionsByTopicAsync(new ListSubscriptionsByTopicRequest
         {
             TopicArn = errorTopic.TopicArn
         });

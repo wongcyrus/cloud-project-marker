@@ -2,6 +2,8 @@ using Amazon.EC2;
 using Amazon.EC2.Model;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 
@@ -58,6 +60,13 @@ public static class QueryHelper
         };
         var response = secretsManagerClient.GetSecretValueAsync(request).Result;
         return response;
+    }
+
+    public static Topic? GetSnsTopicByNameContain(AmazonSimpleNotificationServiceClient SnsClient, string topicName)
+    {
+        var topics = SnsClient!.ListTopicsAsync().Result;
+        var topic = topics.Topics.FirstOrDefault(x => x.TopicArn.Contains(topicName));
+        return topic;
     }
 
 }
