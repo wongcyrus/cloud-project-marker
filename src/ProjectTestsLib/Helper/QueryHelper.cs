@@ -1,12 +1,16 @@
 using Amazon.EC2;
 using Amazon.EC2.Model;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+using Amazon.SQS;
+using Amazon.SQS.Model;
 
 public static class QueryHelper
 {
     public static string GetVpcId(AmazonEC2Client acctEc2Client)
     {
         var describeVpcsRequest = new DescribeVpcsRequest();
-        describeVpcsRequest.Filters.Add(new Filter("tag:Name", ["Cloud Project VPC"]));
+        describeVpcsRequest.Filters.Add(new Amazon.EC2.Model.Filter("tag:Name", ["Cloud Project VPC"]));
         var describeVpcsResponse = acctEc2Client.DescribeVpcsAsync(describeVpcsRequest).Result;
         return describeVpcsResponse.Vpcs[0].VpcId;
     }
@@ -14,8 +18,8 @@ public static class QueryHelper
     public static VpcEndpoint GetEndPointByServiceName(AmazonEC2Client acctEc2Client, string serviceName)
     {
         var describeVpcEndpointsRequest = new DescribeVpcEndpointsRequest();
-        describeVpcEndpointsRequest.Filters.Add(new Filter("vpc-id", [GetVpcId(acctEc2Client)]));
-        describeVpcEndpointsRequest.Filters.Add(new Filter("service-name", [serviceName]));
+        describeVpcEndpointsRequest.Filters.Add(new Amazon.EC2.Model.Filter("vpc-id", [GetVpcId(acctEc2Client)]));
+        describeVpcEndpointsRequest.Filters.Add(new Amazon.EC2.Model.Filter("service-name", [serviceName]));
         var describeVpcEndpointsResponse = acctEc2Client.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest).Result;
         var vpcEndpoints = describeVpcEndpointsResponse.VpcEndpoints;
         return vpcEndpoints[0];
@@ -34,6 +38,26 @@ public static class QueryHelper
         };
         var response = acctEc2Client.DescribeSecurityGroupsAsync(request).Result;
         return response.SecurityGroups.FirstOrDefault();
+    }
+
+    public static string GetSqsQueueUrl(AmazonSQSClient sqsClient, string queueName)
+    {
+        var request = new GetQueueUrlRequest
+        {
+            QueueName = queueName
+        };
+        var response = sqsClient.GetQueueUrlAsync(request).Result;
+        return response.QueueUrl;
+    }
+
+    public static GetSecretValueResponse GetSecretValueById(AmazonSecretsManagerClient secretsManagerClient, string secretId)
+    {
+        var request = new GetSecretValueRequest
+        {
+            SecretId = secretId
+        };
+        var response = secretsManagerClient.GetSecretValueAsync(request).Result;
+        return response;
     }
 
 }

@@ -42,15 +42,9 @@ public class T05_DatabaseTest : AwsTest
 
     [GameTask("Create MasterUserSecret in AmazonSecretsManager with 'username' equals to 'dbroot' and a random 'password'.", 2, 10)]
     [Test, Order(1)]
-    public async Task Test01_DatabaseSecrets()
-    {
-
-        GetSecretValueRequest request = new()
-        {
-            SecretId = "MasterUserSecret",
-            VersionStage = "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified.
-        };
-        var response = await SecretsManagerClient!.GetSecretValueAsync(request);
+    public void Test01_DatabaseSecrets()
+    {   
+        var response = QueryHelper.GetSecretValueById(SecretsManagerClient!, "MasterUserSecret");
 
         Secret? parsedSecret = JsonConvert.DeserializeObject<Secret>(response.SecretString);
 
@@ -69,7 +63,7 @@ public class T05_DatabaseTest : AwsTest
     {
 
         var response = await DynamoDBClient!.ListTablesAsync();
-        var messageTableName = response.TableNames.FirstOrDefault(c => c.Contains("Message"));
+        var messageTableName = response.TableNames.FirstOrDefault(c => c.Equals("Message"));
         Assert.That(messageTableName, Is.Not.Null);
 
         var messageTable = await DynamoDBClient.DescribeTableAsync(messageTableName);
