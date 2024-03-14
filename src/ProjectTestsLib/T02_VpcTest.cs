@@ -7,7 +7,7 @@ namespace ProjectTestsLib;
 [GameClass(2), CancelAfter(Constants.Timeout), Order(2)]
 public class T02_VpcTest: AwsTest
 {
-    private AmazonEC2Client? AcctEc2Client { get; set; }
+    private AmazonEC2Client? Ec2Client { get; set; }
     private string? VpcId { get; set; }
 
 
@@ -15,14 +15,14 @@ public class T02_VpcTest: AwsTest
     public new void Setup()
     {
         base.Setup();
-        AcctEc2Client = new AmazonEC2Client(Credential);
-        VpcId = QueryHelper.GetVpcId(AcctEc2Client);
+        Ec2Client = new AmazonEC2Client(Credential);
+        VpcId = QueryHelper.GetVpcId(Ec2Client);
     }
 
     [TearDown]
     public void TearDown()
     {
-        AcctEc2Client?.Dispose();
+        Ec2Client?.Dispose();
     }
 
     [GameTask("Create a VPC with CIDR 10.0.0.0/16 and name it as 'Cloud Project VPC'.", 2, 10)]
@@ -31,7 +31,7 @@ public class T02_VpcTest: AwsTest
     {
         var describeVpcsRequest = new DescribeVpcsRequest();
         describeVpcsRequest.Filters.Add(new Filter("tag:Name", ["Cloud Project VPC"]));
-        var describeVpcsResponse = await AcctEc2Client!.DescribeVpcsAsync(describeVpcsRequest);
+        var describeVpcsResponse = await Ec2Client!.DescribeVpcsAsync(describeVpcsRequest);
 
         Assert.That(describeVpcsResponse.Vpcs, Has.Count.EqualTo(1));
     }
@@ -42,7 +42,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeSubnetsRequest describeSubnetsRequest = new();
         describeSubnetsRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeSubnetsResponse = await AcctEc2Client!.DescribeSubnetsAsync(describeSubnetsRequest);
+        var describeSubnetsResponse = await Ec2Client!.DescribeSubnetsAsync(describeSubnetsRequest);
         Assert.That(describeSubnetsResponse.Subnets.Count(), Is.EqualTo(4));
         var expectedCidrAddresses = new string[] { "10.0.0.0/24", "10.0.1.0/24", "10.0.4.0/22", "10.0.8.0/22" };
         List<string> acturalCidrAddresses = describeSubnetsResponse.Subnets.Select(c => c.CidrBlock).ToList();
@@ -55,7 +55,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeRouteTablesRequest describeRouteTablesRequest = new();
         describeRouteTablesRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeRouteTablesResponse = await AcctEc2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
+        var describeRouteTablesResponse = await Ec2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
         Assert.That(describeRouteTablesResponse.RouteTables, Has.Count.EqualTo(5));
     }
 
@@ -66,7 +66,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeRouteTablesRequest describeRouteTablesRequest = new();
         describeRouteTablesRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeRouteTablesResponse = await AcctEc2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
+        var describeRouteTablesResponse = await Ec2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
         var routeTables = describeRouteTablesResponse.RouteTables;
         var mainRouteTable = routeTables.FirstOrDefault(c => c.Routes.Count == 1);
         Assert.That(mainRouteTable, Is.Not.Null);
@@ -87,7 +87,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeRouteTablesRequest describeRouteTablesRequest = new();
         describeRouteTablesRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeRouteTablesResponse = await AcctEc2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
+        var describeRouteTablesResponse = await Ec2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
         var routeTables = describeRouteTablesResponse.RouteTables;
         var publicRouteTables = routeTables.FindAll(c => c.Routes.Count == 2);
         Assert.That(publicRouteTables, Has.Count.EqualTo(2));
@@ -122,7 +122,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeVpcEndpointsRequest describeVpcEndpointsRequest = new();
         describeVpcEndpointsRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeVpcEndpointsResponse = await AcctEc2Client!.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest);
+        var describeVpcEndpointsResponse = await Ec2Client!.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest);
         var vpcEndpoints = describeVpcEndpointsResponse.VpcEndpoints;
 
         var interfaceEndpoints = vpcEndpoints.FindAll(c => c.VpcEndpointType == VpcEndpointType.Interface);
@@ -138,7 +138,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeVpcEndpointsRequest describeVpcEndpointsRequest = new();
         describeVpcEndpointsRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeVpcEndpointsResponse = await AcctEc2Client!.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest);
+        var describeVpcEndpointsResponse = await Ec2Client!.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest);
         var vpcEndpoints = describeVpcEndpointsResponse.VpcEndpoints;
 
         var gatewayEndpoints = vpcEndpoints.FindAll(c => c.VpcEndpointType == VpcEndpointType.Gateway);
@@ -154,14 +154,14 @@ public class T02_VpcTest: AwsTest
     {
         DescribeRouteTablesRequest describeRouteTablesRequest = new();
         describeRouteTablesRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeRouteTablesResponse = await AcctEc2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
+        var describeRouteTablesResponse = await Ec2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
         var routeTables = describeRouteTablesResponse.RouteTables;
         var isolatedRouteTables = routeTables.FindAll(c => c.Routes.Count == 3);
         Assert.That(isolatedRouteTables, Has.Count.EqualTo(2));
 
         DescribeVpcEndpointsRequest describeVpcEndpointsRequest = new();
         describeVpcEndpointsRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeVpcEndpointsResponse = await AcctEc2Client!.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest);
+        var describeVpcEndpointsResponse = await Ec2Client!.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest);
         var vpcEndpoints = describeVpcEndpointsResponse.VpcEndpoints;
 
         var gatewayEndpoints = vpcEndpoints.FindAll(c => c.VpcEndpointType == VpcEndpointType.Gateway);
@@ -197,7 +197,7 @@ public class T02_VpcTest: AwsTest
     {
         DescribeRouteTablesRequest describeRouteTablesRequest = new();
         describeRouteTablesRequest.Filters.Add(new Filter("vpc-id", [VpcId]));
-        var describeRouteTablesResponse = await AcctEc2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
+        var describeRouteTablesResponse = await Ec2Client!.DescribeRouteTablesAsync(describeRouteTablesRequest);
         var routeTables = describeRouteTablesResponse.RouteTables.FindAll(c => c.Routes.Count != 1); //Remove main route table
 
         routeTables.Select(c => c.Associations).ToList()

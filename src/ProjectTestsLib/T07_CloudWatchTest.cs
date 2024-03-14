@@ -3,16 +3,8 @@ using Amazon.CloudWatch;
 using Amazon.CloudWatch.Model;
 using Amazon.CloudWatchLogs;
 using Amazon.CloudWatchLogs.Model;
-using Amazon.DynamoDBv2;
-using Amazon.EC2;
-using Amazon.EC2.Model;
-using Amazon.IdentityManagement;
-using Amazon.IdentityManagement.Model;
-using Amazon.Lambda;
-using Amazon.Lambda.Model;
-using Amazon.SecretsManager;
+
 using Amazon.SimpleNotificationService;
-using Amazon.SQS;
 using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
@@ -21,7 +13,7 @@ namespace ProjectTestsLib;
 public class T07_CloudWatchTest : AwsTest
 {
     private AmazonCloudWatchClient? CloudWatchClient { get; set; }
-    public AmazonCloudWatchLogsClient? CloudWatchLogsClient { get; private set; }
+    public AmazonCloudWatchLogsClient? CloudWatchLogsClient { get; set; }
     private AmazonSimpleNotificationServiceClient? SnsClient { get; set; }
 
     [SetUp]
