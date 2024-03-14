@@ -7,7 +7,7 @@ namespace ProjectTestsLib;
 [GameClass(3), CancelAfter(Constants.Timeout), Order(3)]
 public class T03_SecurityGroupTest : AwsTest
 {
-    private AmazonEC2Client? AcctEc2Client { get; set; }
+    private AmazonEC2Client? Ec2Client { get; set; }
 
     private SecurityGroup? AlbSecurityGroup { get; set; }
     private SecurityGroup? LambdaSecurityGroup { get; set; }
@@ -24,20 +24,20 @@ public class T03_SecurityGroupTest : AwsTest
     public new void Setup()
     {
         base.Setup();
-        AcctEc2Client = new AmazonEC2Client(Credential);
-        AlbSecurityGroup = QueryHelper.GetSecurityGroupByName(AcctEc2Client, "ALB Security Group");
-        LambdaSecurityGroup = QueryHelper.GetSecurityGroupByName(AcctEc2Client, "Web Lambda Security Group");
-        DatabaseSecurityGroup = QueryHelper.GetSecurityGroupByName(AcctEc2Client, "Database Security Group");
-        SqsInterfaceEndpoint = QueryHelper.GetEndPointByServiceName(AcctEc2Client, "com.amazonaws.us-east-1.sqs");
-        SecretsManagerInterfaceEndpoint = QueryHelper.GetEndPointByServiceName(AcctEc2Client, "com.amazonaws.us-east-1.secretsmanager");
-        DynamodbGatewayEndpoint = QueryHelper.GetEndPointByServiceName(AcctEc2Client, "com.amazonaws.us-east-1.dynamodb");
-        S3GatewayEndpoint = QueryHelper.GetEndPointByServiceName(AcctEc2Client, "com.amazonaws.us-east-1.s3");
+        Ec2Client = new AmazonEC2Client(Credential);
+        AlbSecurityGroup = QueryHelper.GetSecurityGroupByName(Ec2Client, "ALB Security Group");
+        LambdaSecurityGroup = QueryHelper.GetSecurityGroupByName(Ec2Client, "Web Lambda Security Group");
+        DatabaseSecurityGroup = QueryHelper.GetSecurityGroupByName(Ec2Client, "Database Security Group");
+        SqsInterfaceEndpoint = QueryHelper.GetEndPointByServiceName(Ec2Client, "com.amazonaws.us-east-1.sqs");
+        SecretsManagerInterfaceEndpoint = QueryHelper.GetEndPointByServiceName(Ec2Client, "com.amazonaws.us-east-1.secretsmanager");
+        DynamodbGatewayEndpoint = QueryHelper.GetEndPointByServiceName(Ec2Client, "com.amazonaws.us-east-1.dynamodb");
+        S3GatewayEndpoint = QueryHelper.GetEndPointByServiceName(Ec2Client, "com.amazonaws.us-east-1.s3");
     }
 
     [TearDown]
     public void TearDown()
     {
-        AcctEc2Client?.Dispose();
+        Ec2Client?.Dispose();
     }
 
     [GameTask("In 'Cloud Project VPC', create 3 Security Groups named 'ALB Security Group', 'Web Lambda Security Group', and 'Database Security Group'.", 2, 10)]
@@ -58,12 +58,12 @@ public class T03_SecurityGroupTest : AwsTest
     {
         Assert.Multiple(() =>
         {
-            Assert.That(AlbSecurityGroup!.IpPermissions.Count, Is.EqualTo(1));
+            Assert.That(AlbSecurityGroup!.IpPermissions, Has.Count.EqualTo(1));
             Assert.That(AlbSecurityGroup!.IpPermissions[0].IpProtocol.ToLower(), Is.EqualTo("tcp"));
             Assert.That(AlbSecurityGroup!.IpPermissions[0].FromPort, Is.EqualTo(80));
             Assert.That(AlbSecurityGroup!.IpPermissions[0].ToPort, Is.EqualTo(80));
             Assert.That(AlbSecurityGroup!.IpPermissions[0].Ipv4Ranges[0].CidrIp, Is.EqualTo("0.0.0.0/0"));
-            Assert.That(AlbSecurityGroup!.IpPermissionsEgress.Count, Is.EqualTo(1));
+            Assert.That(AlbSecurityGroup!.IpPermissionsEgress, Has.Count.EqualTo(1));
             Assert.That(AlbSecurityGroup!.IpPermissionsEgress[0].UserIdGroupPairs[0].GroupId, Is.EqualTo(LambdaSecurityGroup!.GroupId));
         });
     }
@@ -111,7 +111,7 @@ public class T03_SecurityGroupTest : AwsTest
                 new() { Name = "prefix-list-name", Values = ["com.amazonaws.us-east-1.s3","com.amazonaws.us-east-1.dynamodb"] },
             ]
         };
-        var describePrefixListsResponse = AcctEc2Client!.DescribePrefixListsAsync(describePrefixListsRequest).Result;
+        var describePrefixListsResponse = Ec2Client!.DescribePrefixListsAsync(describePrefixListsRequest).Result;
         var expectedPrefixListIds = describePrefixListsResponse.PrefixLists.Select(x => x.PrefixListId).ToArray();
         Assert.That(gatewayEndpointPrefixListIds, Is.EquivalentTo(expectedPrefixListIds));
     }

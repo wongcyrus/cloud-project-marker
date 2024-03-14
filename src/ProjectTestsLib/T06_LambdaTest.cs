@@ -19,7 +19,7 @@ public class T06_LambdaTest : AwsTest
     private AmazonIdentityManagementServiceClient? IamClient { get; set; }
     private AmazonSQSClient? SqsClient { get; set; }
     private AmazonSecretsManagerClient? SecretsManagerClient { get; set; }
-    private AmazonEC2Client? AcctEc2Client { get; set; }
+    private AmazonEC2Client? Ec2Client { get; set; }
     private AmazonDynamoDBClient? DynamoDBClient { get; set; }
 
 
@@ -31,7 +31,7 @@ public class T06_LambdaTest : AwsTest
         IamClient = new AmazonIdentityManagementServiceClient(Credential);
         SqsClient = new AmazonSQSClient(Credential);
         SecretsManagerClient = new AmazonSecretsManagerClient(Credential);
-        AcctEc2Client = new AmazonEC2Client(Credential);
+        Ec2Client = new AmazonEC2Client(Credential);
         DynamoDBClient = new AmazonDynamoDBClient(Credential);
     }
 
@@ -42,7 +42,7 @@ public class T06_LambdaTest : AwsTest
         IamClient?.Dispose();
         SqsClient?.Dispose();
         SecretsManagerClient?.Dispose();
-        AcctEc2Client?.Dispose();
+        Ec2Client?.Dispose();
         DynamoDBClient?.Dispose();
     }
 
@@ -105,9 +105,9 @@ public class T06_LambdaTest : AwsTest
             Assert.That(environmentVariables!.Variables["queueUrl"], Is.EqualTo(queueUrl));
             var response = QueryHelper.GetSecretValueById(SecretsManagerClient!, "MasterUserSecret");
             Assert.That(environmentVariables!.Variables["dbSecretArn"], Is.EqualTo(response.ARN));
-            var secretsmanagerEndpoint = QueryHelper.GetEndPointByServiceName(AcctEc2Client!, "com.amazonaws.us-east-1.secretsmanager");
+            var secretsmanagerEndpoint = QueryHelper.GetEndPointByServiceName(Ec2Client!, "com.amazonaws.us-east-1.secretsmanager");
             Assert.That(environmentVariables!.Variables["secretsManagerVpcEndpointPrimaryDNSName"], Is.EqualTo("https://" + secretsmanagerEndpoint.DnsEntries[0].DnsName));
-            var sqsEndpoint = QueryHelper.GetEndPointByServiceName(AcctEc2Client!, "com.amazonaws.us-east-1.sqs");
+            var sqsEndpoint = QueryHelper.GetEndPointByServiceName(Ec2Client!, "com.amazonaws.us-east-1.sqs");
             Assert.That(environmentVariables!.Variables["sqsEndpointDnsEntry"], Is.EqualTo("https://" + sqsEndpoint.DnsEntries[0].DnsName));
             var messageTableName = await DynamoDBClient!.DescribeTableAsync("Message");
             Assert.That(environmentVariables!.Variables["messageTableName"], Is.EqualTo(messageTableName.Table.TableName));
@@ -122,7 +122,7 @@ public class T06_LambdaTest : AwsTest
     {
         var lambdaFunction = await LambdaClient!.GetFunctionAsync("WebLambda");
 
-        var subnet = await AcctEc2Client!.DescribeSubnetsAsync(new DescribeSubnetsRequest
+        var subnet = await Ec2Client!.DescribeSubnetsAsync(new DescribeSubnetsRequest
         {
             SubnetIds = lambdaFunction.Configuration.VpcConfig!.SubnetIds!.ToList()!
         });
@@ -143,7 +143,7 @@ public class T06_LambdaTest : AwsTest
     {
         var lambdaFunction = await LambdaClient!.GetFunctionAsync("WebLambda");
 
-        var securityGroups = await AcctEc2Client!.DescribeSecurityGroupsAsync(new DescribeSecurityGroupsRequest
+        var securityGroups = await Ec2Client!.DescribeSecurityGroupsAsync(new DescribeSecurityGroupsRequest
         {
             GroupIds = lambdaFunction.Configuration.VpcConfig!.SecurityGroupIds!.ToList()!
         });
