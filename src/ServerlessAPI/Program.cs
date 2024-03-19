@@ -8,20 +8,21 @@ var builder = WebApplication.CreateBuilder(args);
 //Logger
 builder.Logging
         .ClearProviders().AddConsole();
-        // .AddJsonConsole();
- 
+// .AddJsonConsole();
+
 // Add services to the container.
 builder.Services
         .AddControllers()
         .AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        });
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        })
+        .AddXmlDataContractSerializerFormatters(); ;
 
 string region = Environment.GetEnvironmentVariable("AWS_REGION") ?? RegionEndpoint.USEast2.SystemName;
 builder.Services
         .AddSingleton<IAmazonDynamoDB>(new AmazonDynamoDBClient(RegionEndpoint.GetBySystemName(region)));
-       
+
 
 // Add AWS Lambda support. When running the application as an AWS Serverless application, Kestrel is replaced
 // with a Lambda function contained in the Amazon.Lambda.AspNetCoreServer package, which marshals the request into the ASP.NET Core hosting framework.

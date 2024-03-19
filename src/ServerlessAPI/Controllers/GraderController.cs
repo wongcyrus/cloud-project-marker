@@ -25,7 +25,8 @@ public class GraderController : ControllerBase
 
     // GET api/grader
     [HttpGet]
-    public async Task<ActionResult<string>> Get(
+    [Produces("application/xml")]
+    public async Task<IActionResult> Get(
         [FromQuery(Name = "aws_access_key")] string accessKeyId,
         [FromQuery(Name = "aws_secret_access_key")] string secretAccessKey,
         [FromQuery(Name = "aws_session_token")] string sessionToken,
@@ -41,10 +42,10 @@ public class GraderController : ControllerBase
         }
 
         var awsTestConfig = new AwsTestConfig(accessKeyId, secretAccessKey, sessionToken, region, graderParameter, trace, filter);
-        var json = await RunUnitTest(awsTestConfig);
+        var xml = await RunUnitTest(awsTestConfig);
 
-        logger.LogInformation(json);
-        return Ok(json);
+        // logger.LogInformation(json);
+        return Ok(xml);
     }
 
     private static string GetTemporaryDirectory(string trace)
@@ -69,8 +70,8 @@ public class GraderController : ControllerBase
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
-        var jsonText = GameController.GetTasksJson();
-        var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
+        var json = GameController.GetTasksJson();
+        // var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
         var matchingTask = json?.FirstOrDefault(c => c.Name == where);
         where = matchingTask?.Filter ?? "test==" + nameof(ProjectTestsLib);
 

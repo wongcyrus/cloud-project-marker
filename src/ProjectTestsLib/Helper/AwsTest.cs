@@ -37,11 +37,7 @@ public abstract class AwsTest
         if (credentialPath == null && File.Exists("/workspaces/cloud-project-marker/events/awsTestConfig.json"))
         {
             credentialPath = "/workspaces/cloud-project-marker/events/awsTestConfig.json";
-        }
-        else
-        {
-            Assert.Fail("AwsTestConfig parameter is not set.");
-        }
+        }        
         credentialPath = credentialPath!.Trim('\'');
         var awsTestConfigString = File.ReadAllText(credentialPath);
         AwsTestConfig = JsonConvert.DeserializeObject<AwsTestConfig>(awsTestConfigString);
