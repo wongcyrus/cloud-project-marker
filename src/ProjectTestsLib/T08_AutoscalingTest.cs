@@ -11,7 +11,7 @@ using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
-[GameClass(7), CancelAfter(Constants.Timeout), Order(7)]
+[GameClass(8), CancelAfter(Constants.Timeout), Order(8)]
 public class T08_AutoscalingTest : AwsTest
 {
     private AmazonAutoScalingClient? AutoScalingClient { get; set; }
