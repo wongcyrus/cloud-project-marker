@@ -7,29 +7,31 @@ using Amazon.SimpleNotificationService.Model;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 
+namespace ProjectTestsLib.Helper;
+
 public static class QueryHelper
 {
-    public static string GetVpcId(AmazonEC2Client acctEc2Client)
+    public static string GetVpcId(AmazonEC2Client ec2Client)
     {
         var describeVpcsRequest = new DescribeVpcsRequest();
         describeVpcsRequest.Filters.Add(new Amazon.EC2.Model.Filter("tag:Name", ["Cloud Project VPC"]));
-        var describeVpcsResponse = acctEc2Client.DescribeVpcsAsync(describeVpcsRequest).Result;
+        var describeVpcsResponse = ec2Client.DescribeVpcsAsync(describeVpcsRequest).Result;
         return describeVpcsResponse.Vpcs[0].VpcId;
     }
 
-    public static VpcEndpoint GetEndPointByServiceName(AmazonEC2Client acctEc2Client, string serviceName)
+    public static VpcEndpoint GetEndPointByServiceName(AmazonEC2Client ec2Client, string serviceName)
     {
         var describeVpcEndpointsRequest = new DescribeVpcEndpointsRequest();
-        describeVpcEndpointsRequest.Filters.Add(new Amazon.EC2.Model.Filter("vpc-id", [GetVpcId(acctEc2Client)]));
+        describeVpcEndpointsRequest.Filters.Add(new Amazon.EC2.Model.Filter("vpc-id", [GetVpcId(ec2Client)]));
         describeVpcEndpointsRequest.Filters.Add(new Amazon.EC2.Model.Filter("service-name", [serviceName]));
-        var describeVpcEndpointsResponse = acctEc2Client.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest).Result;
+        var describeVpcEndpointsResponse = ec2Client.DescribeVpcEndpointsAsync(describeVpcEndpointsRequest).Result;
         var vpcEndpoints = describeVpcEndpointsResponse.VpcEndpoints;
         return vpcEndpoints[0];
     }
 
-    public static SecurityGroup? GetSecurityGroupByName(AmazonEC2Client acctEc2Client, string groupName)
+    public static SecurityGroup? GetSecurityGroupByName(AmazonEC2Client ec2Client, string groupName)
     {
-        var vpcId = GetVpcId(acctEc2Client);
+        var vpcId = GetVpcId(ec2Client);
         var request = new DescribeSecurityGroupsRequest
         {
             Filters =
@@ -38,7 +40,7 @@ public static class QueryHelper
                 new ("group-name", [groupName])
             ]
         };
-        var response = acctEc2Client.DescribeSecurityGroupsAsync(request).Result;
+        var response = ec2Client.DescribeSecurityGroupsAsync(request).Result;
         return response.SecurityGroups.FirstOrDefault();
     }
 

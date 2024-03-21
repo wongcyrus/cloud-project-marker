@@ -68,8 +68,7 @@ public class T05_DatabaseTest : AwsTest
 
         var messageTable = await DynamoDBClient.DescribeTableAsync(messageTableName);
 
-        Assert.That(messageTable.Table, Is.Not.Null);
-        Console.WriteLine(messageTable.Table.AttributeDefinitions);
+        Assert.That(messageTable.Table, Is.Not.Null);  
 
         Assert.Multiple(() =>
         {

@@ -11,7 +11,7 @@ using NUnit.Framework;
 using ProjectTestsLib.Helper;
 namespace ProjectTestsLib;
 
-[GameClass(7), CancelAfter(Constants.Timeout), Order(7)]
+[GameClass(8), CancelAfter(Constants.Timeout), Order(8)]
 public class T08_AutoscalingTest : AwsTest
 {
     private AmazonAutoScalingClient? AutoScalingClient { get; set; }
@@ -180,8 +180,7 @@ do
 done
 ";
 
-        var decodedUserData = Encoding.UTF8.GetString(Convert.FromBase64String(launchTemplateData.UserData));
-        Console.WriteLine(decodedUserData);
+        var decodedUserData = Encoding.UTF8.GetString(Convert.FromBase64String(launchTemplateData.UserData));       
         Assert.That(decodedUserData.Trim().Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", ""),
         Is.EqualTo(expectedUserData.Trim().Replace("\n", "").Replace("\r", "").Replace(" ", "").Replace("\t", "")));
 

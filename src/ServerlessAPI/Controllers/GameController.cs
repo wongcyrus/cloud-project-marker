@@ -37,11 +37,10 @@ namespace ServerlessAPI.Controllers
 
         // GET: api/Game
         [HttpGet]
-        public IActionResult Get()
+        public JsonResult Get()
         {
-            var json = GetTasksJson();
-            logger.LogInformation(json);
-            return Ok(json);
+            var json = GetTasksJson();        
+            return new JsonResult(json);
         }
 
         private static IEnumerable<Type> GetTypesWithHelpAttribute(Assembly assembly)
@@ -51,7 +50,7 @@ namespace ServerlessAPI.Controllers
                    select type;
         }
 
-        public static string GetTasksJson()
+        public static IList<GameTaskData> GetTasksJson()
         {
             {
                 var assembly = Assembly.GetAssembly(type: typeof(GameClassAttribute));
@@ -101,8 +100,8 @@ namespace ServerlessAPI.Controllers
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
                 allCompletedTask = allCompletedTask.OrderBy(c => c.GameClassOrder).ThenBy(c => c.Tests.First()).ToList();
-                var json = JsonConvert.SerializeObject(allCompletedTask.ToArray(), serializerSettings);                
-                return json;
+                // var json = JsonConvert.SerializeObject(allCompletedTask.ToArray(), serializerSettings);                
+                return allCompletedTask;
             }
         }
     }

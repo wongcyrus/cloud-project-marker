@@ -130,9 +130,9 @@ public class T06_LambdaTest : AwsTest
         {
             Assert.That(subnet.Subnets?.Count, Is.EqualTo(2));
             Assert.That(subnet.Subnets![0].VpcId, Is.EqualTo(lambdaFunction.Configuration.VpcConfig.VpcId));
-            Assert.That(subnet.Subnets![0].CidrBlock.EndsWith("/22"), Is.True);
+            Assert.That(subnet.Subnets![0].CidrBlock, Does.EndWith("/22"));
             Assert.That(subnet.Subnets![1].VpcId, Is.EqualTo(lambdaFunction.Configuration.VpcConfig.VpcId));
-            Assert.That(subnet.Subnets![1].CidrBlock.EndsWith("/22"), Is.True);
+            Assert.That(subnet.Subnets![1].CidrBlock, Does.EndWith("/22"));
             Assert.That(subnet.Subnets![0].AvailabilityZone, Is.Not.EqualTo(subnet.Subnets![1].AvailabilityZone));
         });
     }

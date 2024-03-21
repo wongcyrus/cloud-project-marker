@@ -6,7 +6,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 100
+    Timeout: 900
     Tracing: Active
   Api:
     TracingEnabled: true
@@ -19,7 +19,7 @@ Resources:
       CodeUri: ./src/ServerlessAPI/
       Handler: ServerlessAPI
       Runtime: dotnet8
-      MemorySize: 1024
+      MemorySize: 2048
       Events:
         ProxyResource:
           Type: HttpApi
