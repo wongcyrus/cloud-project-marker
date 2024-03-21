@@ -1,6 +1,7 @@
 {
   "image": "mcr.microsoft.com/devcontainers/universal:2",
   "features": {
+    "ghcr.io/devcontainers/features/dotnet:2": {},
     "ghcr.io/devcontainers/features/aws-cli:1": {}
   },
   "customizations": {
@@ -8,8 +9,11 @@
     "vscode": {
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
         "editorconfig.editorconfig",
-        "github.copilot"
+        "github.copilot",
+        "formulahendry.dotnet-test-explorer"
       ]
     }
   }
